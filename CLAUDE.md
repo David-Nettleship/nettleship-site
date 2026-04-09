@@ -6,11 +6,17 @@ A static family history website. No build step, no framework — plain HTML/CSS/
 
 ```
 nettleship-site/
-├── index.html                  # Home page
-├── nettleship-mems.html        # Pat's memoirs
-└── myheritage/
-    ├── ethnicity.html          # DNA pie charts
-    └── ethnicity.json          # Source ethnicity data
+├── webpages/
+│   ├── index.html                  # Home page
+│   ├── nettleship-mems.html        # Pat's memoirs
+│   ├── photos.html                 # Gallery of galleries
+│   ├── photos/
+│   │   ├── engagement.html         # Engagement photo gallery (90 photos)
+│   │   └── wedding.html            # Wedding photo gallery (635 photos)
+│   └── myheritage/
+│       ├── ethnicity.html          # DNA pie charts
+│       └── ethnicity.json          # Source ethnicity data
+└── infra/                          # Terraform — S3 + CloudFront
 ```
 
 ## Design system
@@ -39,9 +45,9 @@ Every page has a `<nav class="site-nav">` above its `<header>` with a "← Nettl
 
 ## Data
 
-`myheritage/ethnicity.json` is the source of truth for DNA percentages. Edit that file if figures need updating, then reflect changes in `ethnicity.html`.
+`webpages/myheritage/ethnicity.json` is the source of truth for DNA percentages. Edit that file if figures need updating, then reflect changes in `ethnicity.html`.
 
 ## Content notes
 
-- `nettleship-mems.html` is a hand-authored HTML version of `nettleship-mems.md` — if the markdown is edited, the HTML should be kept in sync.
+- `webpages/nettleship-mems.html` is a hand-authored HTML version of `nettleship-mems.md` — if the markdown is edited, the HTML should be kept in sync.
 - The memoir was written in 2014 by Pat Nettleship. Preserve her voice; only fix clear errors.

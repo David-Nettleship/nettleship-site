@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nettleship Family Site</title>
+  <title>Photo Galleries — Nettleship</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -23,7 +23,6 @@
       background: var(--bg);
       color: var(--ink);
       font-family: var(--font-body);
-      min-height: 100vh;
       padding: 2rem 1rem 4rem;
     }
 
@@ -42,6 +41,16 @@
       body  { padding: 0.5rem 0.25rem 3rem; }
     }
 
+    /* ── Site nav ── */
+    .site-nav {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      margin-bottom: 1.25rem;
+    }
+    .site-nav a { color: var(--muted); text-decoration: none; }
+    .site-nav a:hover { color: var(--accent); }
+
+    /* ── Header ── */
     header {
       text-align: center;
       padding-bottom: 2rem;
@@ -76,7 +85,7 @@
       color: inherit;
       border: 1px solid var(--rule);
       border-radius: 4px;
-      padding: 1.5rem 1.75rem;
+      overflow: hidden;
       background: var(--bg);
       transition: border-color .15s, box-shadow .15s;
     }
@@ -86,6 +95,18 @@
       box-shadow: 0 2px 10px rgba(139,58,42,.12);
     }
 
+    .card-preview-img {
+      width: 100%;
+      aspect-ratio: 16 / 7;
+      object-fit: cover;
+      display: block;
+      background: var(--rule);
+    }
+
+    .card-body {
+      padding: 1.25rem 1.5rem 1.4rem;
+    }
+
     .card-title {
       font-size: 1.05rem;
       font-family: var(--font-ui);
@@ -93,29 +114,21 @@
       letter-spacing: .04em;
       text-transform: uppercase;
       color: var(--accent);
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.3rem;
     }
 
-    .card:hover .card-title {
-      color: var(--hover);
-    }
+    .card:hover .card-title { color: var(--hover); }
 
     .card-meta {
       font-size: 0.78rem;
       font-family: var(--font-ui);
       color: var(--muted);
-      margin-bottom: 0.75rem;
-    }
-
-    .card-preview {
-      font-size: 0.92rem;
-      line-height: 1.65;
-      color: var(--ink);
+      margin-bottom: 0.6rem;
     }
 
     .card-arrow {
       display: inline-block;
-      margin-top: 0.9rem;
+      margin-top: 0.75rem;
       font-size: 0.8rem;
       font-family: var(--font-ui);
       color: var(--accent);
@@ -128,33 +141,37 @@
 <body>
 <div class="page">
 
+  <nav class="site-nav" aria-label="Site navigation">
+    <a href="index.html">← Nettleship Family</a>
+  </nav>
+
   <header>
-    <h1>Nettleship Family</h1>
-    <p>A collection of family history and heritage</p>
+    <h1>Photo Galleries</h1>
+    <p>David &amp; Kathryn</p>
   </header>
 
   <main class="cards">
 
-    <a class="card" href="nettleship-mems.html">
-      <div class="card-title">Nettleship Memories</div>
-      <div class="card-meta">Written in 2014 by Pat Nettleship</div>
-      <p class="card-preview">
-        Personal memoirs covering life in Rotherham from the war years through to retirement —
-        childhood on Albany Street, wartime school days, courtship, marriage in 1959,
-        raising a family, and the changes witnessed over a lifetime.
-      </p>
-      <span class="card-arrow">Read memories →</span>
+    <a class="card" href="photos/engagement.html">
+      <img class="card-preview-img"
+           src="https://d1mdd4q3n2hv7r.cloudfront.net/engagement/Kathryn%2BDavid.jpg"
+           alt="Engagement preview" loading="lazy">
+      <div class="card-body">
+        <div class="card-title">Engagement</div>
+        <div class="card-meta">David &amp; Kathryn &mdash; 90 photos</div>
+        <span class="card-arrow">View gallery →</span>
+      </div>
     </a>
 
-    <a class="card" href="myheritage/ethnicity.html">
-      <div class="card-title">Ethnicity Estimates</div>
-      <div class="card-meta">DNA data from MyHeritage, December 2025 — David &amp; Kathryn</div>
-      <p class="card-preview">
-        Side-by-side pie charts of DNA ethnicity breakdowns for David and Kathryn,
-        showing ancestry across England, Scotland &amp; Wales, Ireland, the Netherlands,
-        Scandinavia, Brittany, France, and Germanic Europe.
-      </p>
-      <span class="card-arrow">View charts →</span>
+    <a class="card" href="photos/wedding.html">
+      <img class="card-preview-img"
+           src="https://d1mdd4q3n2hv7r.cloudfront.net/wedding/Kathryn%2BDavid-378.jpg"
+           alt="Wedding preview" loading="lazy">
+      <div class="card-body">
+        <div class="card-title">Wedding</div>
+        <div class="card-meta">David &amp; Kathryn &mdash; 635 photos</div>
+        <span class="card-arrow">View gallery →</span>
+      </div>
     </a>
 
   </main>
