@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cotswolds 2024</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #faf8f3;
+      --paper:     #fffef9;
+      --ink:       #2c2416;
+      --muted:     #7a6e5f;
+      --rule:      #d9d0c0;
+      --accent:    #8b3a2a;
+      --font-body: Georgia, 'Times New Roman', serif;
+      --font-ui:   system-ui, -apple-system, sans-serif;
+    }
+
+    body { background: var(--bg); color: var(--ink); font-family: var(--font-body); padding: 2rem 1rem 4rem; }
+    .page { max-width: 1100px; margin: 0 auto; }
+    .site-nav { font-family: var(--font-ui); font-size: 0.8rem; margin-bottom: 1.25rem; }
+    .site-nav a { color: var(--muted); text-decoration: none; }
+    .site-nav a:hover { color: var(--accent); }
+
+    header {
+      background: var(--paper); border: 1px solid var(--rule); border-radius: 4px;
+      padding: 2rem 2.5rem 1.75rem; box-shadow: 0 2px 12px rgba(0,0,0,.07);
+      margin-bottom: 1.75rem; text-align: center;
+    }
+    header h1 { font-size: 1.9rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.3rem; }
+    header p  { font-style: italic; color: var(--muted); font-size: 0.9rem; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.75rem; }
+
+    .thumb { aspect-ratio: 3 / 2; overflow: hidden; border-radius: 3px; border: 1px solid var(--rule); cursor: pointer; background: var(--rule); }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s ease, opacity .3s ease; opacity: 0; }
+    .thumb img.loaded { opacity: 1; }
+    .thumb:hover img  { transform: scale(1.04); }
+
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(20,15,10,.93); z-index: 100; align-items: center; justify-content: center; }
+    .lightbox.open { display: flex; }
+    .lightbox-img-wrap { max-width: calc(100vw - 8rem); max-height: calc(100vh - 4rem); display: flex; align-items: center; justify-content: center; }
+    .lightbox img { max-width: 100%; max-height: calc(100vh - 4rem); object-fit: contain; border-radius: 2px; box-shadow: 0 8px 40px rgba(0,0,0,.6); display: block; }
+
+    .lb-btn { position: fixed; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,.12); border: none; color: #fff; font-size: 1.75rem; width: 3rem; height: 3rem; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s; font-family: var(--font-ui); }
+    .lb-btn:hover { background: rgba(255,255,255,.25); }
+    .lb-prev { left: 1rem; }
+    .lb-next { right: 1rem; }
+    .lb-close { position: fixed; top: 1rem; right: 1rem; background: rgba(255,255,255,.12); border: none; color: #fff; font-size: 1.25rem; width: 2.5rem; height: 2.5rem; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--font-ui); transition: background .15s; }
+    .lb-close:hover { background: rgba(255,255,255,.25); }
+    .lb-counter { position: fixed; bottom: 1.25rem; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,.6); font-family: var(--font-ui); font-size: 0.8rem; }
+
+    @media (max-width: 600px) {
+      body { padding: 0.5rem 0.5rem 3rem; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.4rem; }
+      .lb-btn { width: 2.25rem; height: 2.25rem; font-size: 1.25rem; }
+      .lb-prev { left: 0.25rem; } .lb-next { right: 0.25rem; }
+      .lightbox-img-wrap { max-width: 100vw; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <nav class="site-nav" aria-label="Site navigation">
+    <a href="../../photos.html">← Photo Galleries</a>
+  </nav>
+
+  <header>
+    <h1>Cotswolds 2024</h1>
+    <p>June 2024 &mdash; 60 photos</p>
+  </header>
+
+  <main class="grid" id="gallery"></main>
+
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lb-close" id="lbClose" aria-label="Close">&#x2715;</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous">&#x2039;</button>
+  <div class="lightbox-img-wrap"><img id="lbImg" src="" alt=""></div>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next">&#x203A;</button>
+  <div class="lb-counter" id="lbCounter"></div>
+</div>
+
+<script>
+  const BASE = 'https://d1mdd4q3n2hv7r.cloudfront.net/holidays/cotswolds-2024/';
+
+  const photos = [
+    'Messenger_creation_1f137789-1b58-4da2-ab5d-3cb8ed4c6932.jpg',
+    'Messenger_creation_2040e001-4c46-4475-b292-b3fd57867950.jpg',
+    'Messenger_creation_2f609108-19b8-4e6c-bb62-eab38cba2693.jpg',
+    'Messenger_creation_42eec96a-f1f7-40c5-852d-a08efc2b36b9.jpg',
+    'Messenger_creation_4b3e4160-4ec4-43f7-a476-aa858233da03.jpg',
+    'Messenger_creation_5f587c9b-0279-4a87-8521-a359bd3ecf19.jpg',
+    'Messenger_creation_66433c96-bf48-4548-88ce-29dafacae505.jpg',
+    'Messenger_creation_77123f1f-f1fb-42b1-be6c-918fa8c1f346.jpg',
+    'Messenger_creation_a91de987-64fd-41d7-80a3-38abff971f0d.jpg',
+    'Messenger_creation_c9747f79-d2bb-46ff-bf8d-f48bda698f09.jpg',
+    'PXL_20240608_130004979.jpg',
+    'PXL_20240608_130903596.jpg',
+    'PXL_20240608_134843409.jpg',
+    'PXL_20240608_134853208.jpg',
+    'PXL_20240608_135137323.jpg',
+    'PXL_20240608_135607450.jpg',
+    'PXL_20240608_140706474.jpg',
+    'PXL_20240608_141724336.jpg',
+    'PXL_20240608_141728660.jpg',
+    'PXL_20240609_080059346.jpg',
+    'PXL_20240609_104227229.jpg',
+    'PXL_20240609_110427235.jpg',
+    'PXL_20240609_111504871.jpg',
+    'PXL_20240609_130616477.jpg',
+    'PXL_20240609_141336965.jpg',
+    'PXL_20240609_141417635.jpg',
+    'PXL_20240609_180528795.jpg',
+    'PXL_20240610_101946612.jpg',
+    'PXL_20240610_105927612.jpg',
+    'PXL_20240610_125131783.jpg',
+    'PXL_20240611_095627064.jpg',
+    'PXL_20240611_112118140.jpg',
+    'PXL_20240611_142834172.jpg',
+    'PXL_20240611_142835555.jpg',
+    'PXL_20240611_142837697.jpg',
+    'PXL_20240611_142846482.jpg',
+    'PXL_20240612_104047797.jpg',
+    'PXL_20240612_104315557.jpg',
+    'PXL_20240612_111314393.jpg',
+    'PXL_20240612_111346626.jpg',
+    'PXL_20240612_111837925.jpg',
+    'PXL_20240612_111850023.jpg',
+    'PXL_20240612_125948239.jpg',
+    'PXL_20240614_120411656.jpg',
+    'PXL_20240614_120609381.jpg',
+    'PXL_20240614_121450027.jpg',
+    'PXL_20240614_121451565.jpg',
+    'PXL_20240614_121834133.jpg',
+    'PXL_20240614_122018839.jpg',
+    'PXL_20240614_123503199.jpg',
+    'PXL_20240614_125235853.jpg',
+    'PXL_20240614_151413453.jpg',
+    'PXL_20240614_151416431.jpg',
+    'PXL_20240614_151418749.jpg',
+    'PXL_20240614_184102597.jpg',
+    'PXL_20240614_184105098.jpg',
+    'PXL_20240614_184133909.jpg',
+    'Screenshot_20240609-085634.jpg',
+    'original_718e122f-bb2f-43a4-affd-c8f29073bafd_PXL_20240608_130015445.jpg',
+    'original_bed6f78e-bf29-416d-8732-907da504f570_PXL_20240609_180402362.jpg',
+  ];
+
+  const gallery = document.getElementById('gallery');
+  photos.forEach((filename, i) => {
+    const url = BASE + encodeURIComponent(filename);
+    const div = document.createElement('div');
+    div.className = 'thumb';
+    const img = document.createElement('img');
+    img.alt = `Cotswolds 2024 photo ${i + 1}`;
+    img.loading = 'lazy';
+    img.src = url;
+    img.addEventListener('load',  () => img.classList.add('loaded'));
+    img.addEventListener('error', () => img.classList.add('loaded'));
+    div.appendChild(img);
+    div.addEventListener('click', () => openLightbox(i));
+    gallery.appendChild(div);
+  });
+
+  const lightbox  = document.getElementById('lightbox');
+  const lbImg     = document.getElementById('lbImg');
+  const lbCounter = document.getElementById('lbCounter');
+  let current = 0;
+
+  function openLightbox(i) { current = i; showPhoto(); lightbox.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeLightbox()  { lightbox.classList.remove('open'); document.body.style.overflow = ''; lbImg.src = ''; }
+  function showPhoto()      { lbImg.src = BASE + encodeURIComponent(photos[current]); lbImg.alt = `Cotswolds 2024 photo ${current + 1}`; lbCounter.textContent = `${current + 1} / ${photos.length}`; }
+  function prev() { current = (current - 1 + photos.length) % photos.length; showPhoto(); }
+  function next() { current = (current + 1) % photos.length; showPhoto(); }
+
+  document.getElementById('lbClose').addEventListener('click', closeLightbox);
+  document.getElementById('lbPrev').addEventListener('click', prev);
+  document.getElementById('lbNext').addEventListener('click', next);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'ArrowLeft')  prev();
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'Escape')     closeLightbox();
+  });
+</script>
+</body>
+</html>

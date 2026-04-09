@@ -72,11 +72,32 @@
       font-size: 0.95rem;
     }
 
+    /* ── Sections ── */
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-heading {
+      font-size: 0.75rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-family: var(--font-ui);
+      font-weight: 600;
+      color: var(--muted);
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+
     /* ── Cards ── */
     .cards {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
       gap: 1.5rem;
+    }
+
+    @media (max-width: 520px) {
+      .cards { grid-template-columns: 1fr; }
     }
 
     .card {
@@ -136,6 +157,10 @@
     }
 
     .card:hover .card-arrow { color: var(--hover); }
+
+    .card-todo { cursor: default; opacity: 0.55; }
+    .card-todo:hover { border-color: var(--rule); box-shadow: none; }
+    .card-preview-placeholder { background: var(--rule); }
   </style>
 </head>
 <body>
@@ -147,32 +172,104 @@
 
   <header>
     <h1>Photo Galleries</h1>
-    <p>David &amp; Kathryn</p>
+    <p>Nettleship Pics</p>
   </header>
 
-  <main class="cards">
+  <main>
 
-    <a class="card" href="photos/engagement.html">
-      <img class="card-preview-img"
-           src="https://d1mdd4q3n2hv7r.cloudfront.net/engagement/Kathryn%2BDavid.jpg"
-           alt="Engagement preview" loading="lazy">
-      <div class="card-body">
-        <div class="card-title">Engagement</div>
-        <div class="card-meta">David &amp; Kathryn &mdash; 90 photos</div>
-        <span class="card-arrow">View gallery →</span>
-      </div>
-    </a>
+    <div class="section">
+      <h2 class="section-heading">David &amp; Kathryn</h2>
+      <div class="cards">
+        <a class="card" href="photos/wedding.html">
+          <img class="card-preview-img"
+               src="https://d1mdd4q3n2hv7r.cloudfront.net/wedding/Kathryn%2BDavid-378.jpg"
+               alt="Wedding preview" loading="lazy">
+          <div class="card-body">
+            <div class="card-title">Wedding</div>
+            <div class="card-meta">David &amp; Kathryn &mdash; 635 photos</div>
+            <span class="card-arrow">View gallery →</span>
+          </div>
+        </a>
+        
+        <a class="card" href="photos/engagement.html">
+          <img class="card-preview-img"
+               src="https://d1mdd4q3n2hv7r.cloudfront.net/engagement/Kathryn%2BDavid.jpg"
+               alt="Engagement preview" loading="lazy">
+          <div class="card-body">
+            <div class="card-title">Engagement</div>
+            <div class="card-meta">David &amp; Kathryn &mdash; 90 photos</div>
+            <span class="card-arrow">View gallery →</span>
+          </div>
+        </a>
 
-    <a class="card" href="photos/wedding.html">
-      <img class="card-preview-img"
-           src="https://d1mdd4q3n2hv7r.cloudfront.net/wedding/Kathryn%2BDavid-378.jpg"
-           alt="Wedding preview" loading="lazy">
-      <div class="card-body">
-        <div class="card-title">Wedding</div>
-        <div class="card-meta">David &amp; Kathryn &mdash; 635 photos</div>
-        <span class="card-arrow">View gallery →</span>
       </div>
-    </a>
+    </div>
+
+    <div class="section">
+      <h2 class="section-heading">Family Holidays — 2024 and after</h2>
+      <div class="cards">
+
+        <a class="card" href="photos/holidays/new-forest-2025.html">
+          <img class="card-preview-img"
+               src="https://d1mdd4q3n2hv7r.cloudfront.net/holidays/new-forest-2025/PXL_20250702_140517012.jpg"
+               alt="New Forest 2025 preview" loading="lazy">
+          <div class="card-body">
+            <div class="card-title">New Forest 2025</div>
+            <div class="card-meta">July 2025 &mdash; more photos to be added</div>
+            <span class="card-arrow">View gallery →</span>
+          </div>
+        </a>
+
+        <div class="card card-todo">
+          <div class="card-preview-img card-preview-placeholder"></div>
+          <div class="card-body">
+            <div class="card-title">Cornwall 2025</div>
+            <div class="card-meta">Coming soon</div>
+          </div>
+        </div>
+
+        <a class="card" href="photos/holidays/cotswolds-2024.html">
+          <img class="card-preview-img"
+               src="https://d1mdd4q3n2hv7r.cloudfront.net/holidays/cotswolds-2024/Messenger_creation_2f609108-19b8-4e6c-bb62-eab38cba2693.jpg"
+               alt="Cotswolds 2024 preview" loading="lazy">
+          <div class="card-body">
+            <div class="card-title">Cotswolds 2024</div>
+            <div class="card-meta">June 2024 &mdash; 60 photos</div>
+            <span class="card-arrow">View gallery →</span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-heading">David & Kathryn Holidays — 2023 &amp; earlier</h2>
+      <div class="cards">
+
+        <a class="card" href="photos/holidays/prague-2023.html">
+          <img class="card-preview-img"
+               src="https://d1mdd4q3n2hv7r.cloudfront.net/holidays/prague-2023/received_675016817874141.jpg"
+               alt="Prague 2023 preview" loading="lazy">
+          <div class="card-body">
+            <div class="card-title">Prague 2023</div>
+            <div class="card-meta">August 2023 &mdash; 48 photos</div>
+            <span class="card-arrow">View gallery →</span>
+          </div>
+        </a>
+
+        <a class="card" href="photos/holidays/greece-2019.html">
+          <img class="card-preview-img"
+               src="https://d1mdd4q3n2hv7r.cloudfront.net/holidays/greece-2019/received_675382626278213.jpg"
+               alt="Greece 2019 preview" loading="lazy">
+          <div class="card-body">
+            <div class="card-title">Greece 2019</div>
+            <div class="card-meta">September 2019 &mdash; 197 photos</div>
+            <span class="card-arrow">View gallery →</span>
+          </div>
+        </a>
+
+      </div>
+    </div>
 
   </main>
 

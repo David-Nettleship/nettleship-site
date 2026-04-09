@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Greece 2019</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #faf8f3;
+      --paper:     #fffef9;
+      --ink:       #2c2416;
+      --muted:     #7a6e5f;
+      --rule:      #d9d0c0;
+      --accent:    #8b3a2a;
+      --font-body: Georgia, 'Times New Roman', serif;
+      --font-ui:   system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-body);
+      padding: 2rem 1rem 4rem;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── Site nav ── */
+    .site-nav {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      margin-bottom: 1.25rem;
+    }
+    .site-nav a { color: var(--muted); text-decoration: none; }
+    .site-nav a:hover { color: var(--accent); }
+
+    /* ── Header ── */
+    header {
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 2rem 2.5rem 1.75rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+      margin-bottom: 1.75rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 1.9rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+
+    header p {
+      font-style: italic;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .thumb {
+      aspect-ratio: 3 / 2;
+      overflow: hidden;
+      border-radius: 3px;
+      border: 1px solid var(--rule);
+      cursor: pointer;
+      background: var(--rule);
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .3s ease, opacity .3s ease;
+      opacity: 0;
+    }
+
+    .thumb img.loaded { opacity: 1; }
+    .thumb:hover img  { transform: scale(1.04); }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 15, 10, 0.93);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox.open { display: flex; }
+
+    .lightbox-img-wrap {
+      position: relative;
+      max-width: calc(100vw - 8rem);
+      max-height: calc(100vh - 4rem);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox img {
+      max-width: 100%;
+      max-height: calc(100vh - 4rem);
+      object-fit: contain;
+      border-radius: 2px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.6);
+      display: block;
+    }
+
+    .lb-btn {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,.12);
+      border: none;
+      color: #fff;
+      font-size: 1.75rem;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s;
+      font-family: var(--font-ui);
+    }
+    .lb-btn:hover { background: rgba(255,255,255,.25); }
+    .lb-prev { left: 1rem; }
+    .lb-next { right: 1rem; }
+
+    .lb-close {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255,255,255,.12);
+      border: none;
+      color: #fff;
+      font-size: 1.25rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-ui);
+      transition: background .15s;
+    }
+    .lb-close:hover { background: rgba(255,255,255,.25); }
+
+    .lb-counter {
+      position: fixed;
+      bottom: 1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,.6);
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 0.5rem 0.5rem 3rem; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.4rem; }
+      .lb-btn { width: 2.25rem; height: 2.25rem; font-size: 1.25rem; }
+      .lb-prev { left: 0.25rem; }
+      .lb-next { right: 0.25rem; }
+      .lightbox-img-wrap { max-width: 100vw; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <nav class="site-nav" aria-label="Site navigation">
+    <a href="../../photos.html">← Photo Galleries</a>
+  </nav>
+
+  <header>
+    <h1>Greece 2019</h1>
+    <h3>Athens, Santorini and Crete (Heraklion)</h3>
+    <br>
+    <p>September 2019 &mdash; 197 photos</p>
+  </header>
+
+  <main class="grid" id="gallery"></main>
+
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lb-close" id="lbClose" aria-label="Close">&#x2715;</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous">&#x2039;</button>
+  <div class="lightbox-img-wrap">
+    <img id="lbImg" src="" alt="">
+  </div>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next">&#x203A;</button>
+  <div class="lb-counter" id="lbCounter"></div>
+</div>
+
+<script>
+  const BASE = 'https://d1mdd4q3n2hv7r.cloudfront.net/holidays/greece-2019/';
+
+  const photos = [
+    '811953473.jpg',
+    'IMG_20190909_162252.jpg',
+    'IMG_20190909_162855.jpg',
+    'IMG_20190909_174121.jpg',
+    'IMG_20190909_174256.jpg',
+    'IMG_20190909_174433.jpg',
+    'IMG_20190909_175445.jpg',
+    'IMG_20190909_181037.jpg',
+    'IMG_20190909_182632.jpg',
+    'IMG_20190909_194232.jpg',
+    'IMG_20190909_194722.jpg',
+    'IMG_20190909_213654.jpg',
+    'IMG_20190910_085523.jpg',
+    'IMG_20190910_094606.jpg',
+    'IMG_20190910_094753.jpg',
+    'IMG_20190910_094839.jpg',
+    'IMG_20190910_095146.jpg',
+    'IMG_20190910_095622.jpg',
+    'IMG_20190910_095644.jpg',
+    'IMG_20190910_095747.jpg',
+    'IMG_20190910_100404.jpg',
+    'IMG_20190910_100918.jpg',
+    'IMG_20190910_101523.jpg',
+    'IMG_20190910_101528.jpg',
+    'IMG_20190910_101643.jpg',
+    'IMG_20190910_102246.jpg',
+    'IMG_20190910_102253.jpg',
+    'IMG_20190910_102256.jpg',
+    'IMG_20190910_103012.jpg',
+    'IMG_20190910_103023.jpg',
+    'IMG_20190910_113153.jpg',
+    'IMG_20190910_113349.jpg',
+    'IMG_20190910_113515.jpg',
+    'IMG_20190910_113621.jpg',
+    'IMG_20190910_114013.jpg',
+    'IMG_20190910_114019.jpg',
+    'IMG_20190910_114206.jpg',
+    'IMG_20190910_114616.jpg',
+    'IMG_20190910_114625.jpg',
+    'IMG_20190910_114729.jpg',
+    'IMG_20190910_115347.jpg',
+    'IMG_20190910_120033.jpg',
+    'IMG_20190910_120110.jpg',
+    'IMG_20190910_120147.jpg',
+    'IMG_20190910_120157.jpg',
+    'IMG_20190910_120439.jpg',
+    'IMG_20190910_124830.jpg',
+    'IMG_20190910_124903.jpg',
+    'IMG_20190910_125049.jpg',
+    'IMG_20190910_141521.jpg',
+    'IMG_20190910_185543.jpg',
+    'IMG_20190910_201829.jpg',
+    'IMG_20190910_201848.jpg',
+    'IMG_20190910_210009.jpg',
+    'IMG_20190910_210034.jpg',
+    'IMG_20190910_213810_1.jpg',
+    'IMG_20190911_104720.jpg',
+    'IMG_20190911_111449.jpg',
+    'IMG_20190911_122008.jpg',
+    'IMG_20190911_122315.jpg',
+    'IMG_20190911_122824.jpg',
+    'IMG_20190911_123343.jpg',
+    'IMG_20190911_124621.jpg',
+    'IMG_20190911_133911.jpg',
+    'IMG_20190911_135540.jpg',
+    'IMG_20190911_140530.jpg',
+    'IMG_20190911_140838.jpg',
+    'IMG_20190911_141317.jpg',
+    'IMG_20190911_141331.jpg',
+    'IMG_20190911_141417.jpg',
+    'IMG_20190911_141419.jpg',
+    'IMG_20190911_141613.jpg',
+    'IMG_20190911_141957.jpg',
+    'IMG_20190911_150637.jpg',
+    'IMG_20190911_152901.jpg',
+    'IMG_20190911_153017.jpg',
+    'IMG_20190911_153310.jpg',
+    'IMG_20190911_153609.jpg',
+    'IMG_20190911_153807.jpg',
+    'IMG_20190911_153911.jpg',
+    'IMG_20190911_153921.jpg',
+    'IMG_20190911_154112.jpg',
+    'IMG_20190911_154339.jpg',
+    'IMG_20190911_154857.jpg',
+    'IMG_20190911_154908.jpg',
+    'IMG_20190911_155206.jpg',
+    'IMG_20190911_155243.jpg',
+    'IMG_20190911_155413.jpg',
+    'IMG_20190911_155633.jpg',
+    'IMG_20190911_181848.jpg',
+    'IMG_20190911_191053.jpg',
+    'IMG_20190911_194359.jpg',
+    'IMG_20190911_195056.jpg',
+    'IMG_20190911_195938.jpg',
+    'IMG_20190911_212614.jpg',
+    'IMG_20190911_212909.jpg',
+    'IMG_20190912_110715.jpg',
+    'IMG_20190912_110749.jpg',
+    'IMG_20190912_110815.jpg',
+    'IMG_20190912_111041.jpg',
+    'IMG_20190912_121251.jpg',
+    'IMG_20190912_122022.jpg',
+    'IMG_20190913_124615.jpg',
+    'IMG_20190913_130118.jpg',
+    'IMG_20190913_132336.jpg',
+    'IMG_20190913_133129.jpg',
+    'IMG_20190913_134405.jpg',
+    'IMG_20190913_134620.jpg',
+    'IMG_20190913_134641.jpg',
+    'IMG_20190913_143650.jpg',
+    'IMG_20190913_150439.jpg',
+    'IMG_20190913_154626.jpg',
+    'IMG_20190913_154651.jpg',
+    'IMG_20190913_160550.jpg',
+    'IMG_20190913_160930.jpg',
+    'IMG_20190913_161137.jpg',
+    'IMG_20190913_161536.jpg',
+    'IMG_20190913_161714.jpg',
+    'IMG_20190913_161732.jpg',
+    'IMG_20190913_161918.jpg',
+    'IMG_20190913_162011.jpg',
+    'IMG_20190913_162236.jpg',
+    'IMG_20190913_162346.jpg',
+    'IMG_20190913_162612.jpg',
+    'IMG_20190913_162837.jpg',
+    'IMG_20190913_163221.jpg',
+    'IMG_20190913_163306.jpg',
+    'IMG_20190913_163553.jpg',
+    'IMG_20190913_163745.jpg',
+    'IMG_20190913_163854.jpg',
+    'IMG_20190913_163956.jpg',
+    'IMG_20190913_164355.jpg',
+    'IMG_20190913_164633.jpg',
+    'IMG_20190913_165051.jpg',
+    'IMG_20190913_165208.jpg',
+    'IMG_20190913_165534.jpg',
+    'IMG_20190913_165746.jpg',
+    'IMG_20190913_165815.jpg',
+    'IMG_20190913_165931.jpg',
+    'IMG_20190913_170008.jpg',
+    'IMG_20190913_170015.jpg',
+    'IMG_20190913_170107.jpg',
+    'IMG_20190913_170217.jpg',
+    'IMG_20190913_170520.jpg',
+    'IMG_20190913_172222.jpg',
+    'IMG_20190913_172319.jpg',
+    'IMG_20190913_191506.jpg',
+    'IMG_20190913_200922.jpg',
+    'IMG_20190914_130738.jpg',
+    'IMG_20190914_130935.jpg',
+    'IMG_20190914_131132.jpg',
+    'IMG_20190914_131427.jpg',
+    'IMG_20190914_131642.jpg',
+    'IMG_20190914_131757.jpg',
+    'IMG_20190914_132009.jpg',
+    'IMG_20190914_132623.jpg',
+    'IMG_20190914_132714.jpg',
+    'IMG_20190914_134404.jpg',
+    'IMG_20190914_134610.jpg',
+    'IMG_20190914_135733.jpg',
+    'IMG_20190914_191556.jpg',
+    'IMG_20190914_192220.jpg',
+    'IMG_20190914_192224.jpg',
+    'IMG_20190914_195048.jpg',
+    'IMG_20190915_114500.jpg',
+    'IMG_20190915_124914.jpg',
+    'IMG_20190915_125056.jpg',
+    'IMG_20190915_130503.jpg',
+    'IMG_20190915_131756.jpg',
+    'IMG_20190915_151711.jpg',
+    'IMG_20190915_152710.jpg',
+    'received_1117394858462083.jpg',
+    'received_1143592495845394.jpg',
+    'received_1159225141133221.jpg',
+    'received_1218297245045295.jpg',
+    'received_1416926845111811.jpg',
+    'received_1505565289582043.jpg',
+    'received_2385253278413700.jpg',
+    'received_2463552627255357.jpg',
+    'received_2853555651339985.jpg',
+    'received_2975149822512824.jpg',
+    'received_3473430409349851.jpg',
+    'received_372392626984801.jpg',
+    'received_373228523611187.jpg',
+    'received_376260106600318.jpg',
+    'received_383718302577258.jpg',
+    'received_393985408186188.jpg',
+    'received_463003247619711.jpg',
+    'received_509171263227280.jpg',
+    'received_515286982621375.jpg',
+    'received_523460778429303.jpg',
+    'received_675382626278213.jpg',
+    'received_695444714304653.jpg',
+    'received_695934584234066.jpg',
+    'received_778155612603891.jpg',
+    'received_780671855695956.jpg',
+    'received_924805817912023.jpg',
+  ];
+
+  // Build grid
+  const gallery = document.getElementById('gallery');
+  photos.forEach((filename, i) => {
+    const url = BASE + encodeURIComponent(filename);
+    const div = document.createElement('div');
+    div.className = 'thumb';
+    div.dataset.index = i;
+    const img = document.createElement('img');
+    img.alt = `Greece 2019 photo ${i + 1}`;
+    img.loading = 'lazy';
+    img.src = url;
+    img.addEventListener('load', () => img.classList.add('loaded'));
+    img.addEventListener('error', () => img.classList.add('loaded'));
+    div.appendChild(img);
+    div.addEventListener('click', () => openLightbox(i));
+    gallery.appendChild(div);
+  });
+
+  // Lightbox
+  const lightbox  = document.getElementById('lightbox');
+  const lbImg     = document.getElementById('lbImg');
+  const lbCounter = document.getElementById('lbCounter');
+  let current = 0;
+
+  function openLightbox(index) {
+    current = index;
+    showPhoto();
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+    lbImg.src = '';
+  }
+
+  function showPhoto() {
+    lbImg.src = BASE + encodeURIComponent(photos[current]);
+    lbImg.alt = `Greece 2019 photo ${current + 1}`;
+    lbCounter.textContent = `${current + 1} / ${photos.length}`;
+  }
+
+  function prev() { current = (current - 1 + photos.length) % photos.length; showPhoto(); }
+  function next() { current = (current + 1) % photos.length; showPhoto(); }
+
+  document.getElementById('lbClose').addEventListener('click', closeLightbox);
+  document.getElementById('lbPrev').addEventListener('click', prev);
+  document.getElementById('lbNext').addEventListener('click', next);
+
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'ArrowLeft')  prev();
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'Escape')     closeLightbox();
+  });
+</script>
+</body>
+</html>

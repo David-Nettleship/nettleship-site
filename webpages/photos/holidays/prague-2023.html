@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prague 2023</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #faf8f3;
+      --paper:     #fffef9;
+      --ink:       #2c2416;
+      --muted:     #7a6e5f;
+      --rule:      #d9d0c0;
+      --accent:    #8b3a2a;
+      --font-body: Georgia, 'Times New Roman', serif;
+      --font-ui:   system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-body);
+      padding: 2rem 1rem 4rem;
+    }
+
+    .page { max-width: 1100px; margin: 0 auto; }
+
+    .site-nav { font-family: var(--font-ui); font-size: 0.8rem; margin-bottom: 1.25rem; }
+    .site-nav a { color: var(--muted); text-decoration: none; }
+    .site-nav a:hover { color: var(--accent); }
+
+    header {
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 2rem 2.5rem 1.75rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+      margin-bottom: 1.75rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 1.9rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+
+    header p { font-style: italic; color: var(--muted); font-size: 0.9rem; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .thumb {
+      aspect-ratio: 3 / 2;
+      overflow: hidden;
+      border-radius: 3px;
+      border: 1px solid var(--rule);
+      cursor: pointer;
+      background: var(--rule);
+    }
+
+    .thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      transition: transform .3s ease, opacity .3s ease;
+      opacity: 0;
+    }
+
+    .thumb img.loaded { opacity: 1; }
+    .thumb:hover img  { transform: scale(1.04); }
+
+    .lightbox {
+      display: none; position: fixed; inset: 0;
+      background: rgba(20,15,10,.93); z-index: 100;
+      align-items: center; justify-content: center;
+    }
+    .lightbox.open { display: flex; }
+
+    .lightbox-img-wrap {
+      max-width: calc(100vw - 8rem);
+      max-height: calc(100vh - 4rem);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .lightbox img {
+      max-width: 100%; max-height: calc(100vh - 4rem);
+      object-fit: contain; border-radius: 2px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.6); display: block;
+    }
+
+    .lb-btn {
+      position: fixed; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,.12); border: none; color: #fff;
+      font-size: 1.75rem; width: 3rem; height: 3rem; border-radius: 50%;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .15s; font-family: var(--font-ui);
+    }
+    .lb-btn:hover { background: rgba(255,255,255,.25); }
+    .lb-prev { left: 1rem; }
+    .lb-next { right: 1rem; }
+
+    .lb-close {
+      position: fixed; top: 1rem; right: 1rem;
+      background: rgba(255,255,255,.12); border: none; color: #fff;
+      font-size: 1.25rem; width: 2.5rem; height: 2.5rem; border-radius: 50%;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-ui); transition: background .15s;
+    }
+    .lb-close:hover { background: rgba(255,255,255,.25); }
+
+    .lb-counter {
+      position: fixed; bottom: 1.25rem; left: 50%; transform: translateX(-50%);
+      color: rgba(255,255,255,.6); font-family: var(--font-ui); font-size: 0.8rem;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 0.5rem 0.5rem 3rem; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.4rem; }
+      .lb-btn { width: 2.25rem; height: 2.25rem; font-size: 1.25rem; }
+      .lb-prev { left: 0.25rem; }
+      .lb-next { right: 0.25rem; }
+      .lightbox-img-wrap { max-width: 100vw; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <nav class="site-nav" aria-label="Site navigation">
+    <a href="../../photos.html">← Photo Galleries</a>
+  </nav>
+
+  <header>
+    <h1>Prague 2023</h1>
+    <p>August 2023 &mdash; 48 photos</p>
+  </header>
+
+  <main class="grid" id="gallery"></main>
+
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lb-close" id="lbClose" aria-label="Close">&#x2715;</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous">&#x2039;</button>
+  <div class="lightbox-img-wrap">
+    <img id="lbImg" src="" alt="">
+  </div>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next">&#x203A;</button>
+  <div class="lb-counter" id="lbCounter"></div>
+</div>
+
+<script>
+  const BASE = 'https://d1mdd4q3n2hv7r.cloudfront.net/holidays/prague-2023/';
+
+  const photos = [
+    'PXL_20230825_094312613.jpg',
+    'PXL_20230825_094906771.jpg',
+    'PXL_20230825_095109220.jpg',
+    'PXL_20230825_095622634.jpg',
+    'PXL_20230825_101240346.jpg',
+    'PXL_20230825_101447654.jpg',
+    'PXL_20230825_101520050.jpg',
+    'PXL_20230825_101642659.jpg',
+    'PXL_20230825_101645594.jpg',
+    'PXL_20230825_102251229.jpg',
+    'PXL_20230825_104724389.jpg',
+    'PXL_20230825_104907014.jpg',
+    'PXL_20230825_105242272.jpg',
+    'PXL_20230825_110015473.jpg',
+    'PXL_20230825_112201394.jpg',
+    'PXL_20230825_120745044.jpg',
+    'PXL_20230825_121514444.jpg',
+    'PXL_20230825_123035290.jpg',
+    'PXL_20230825_124424802.jpg',
+    'PXL_20230825_124507417.jpg',
+    'PXL_20230825_124621318.jpg',
+    'PXL_20230825_124733405.jpg',
+    'PXL_20230825_124857623.jpg',
+    'PXL_20230825_124900531.jpg',
+    'PXL_20230825_130502650.jpg',
+    'PXL_20230825_154033597.jpg',
+    'PXL_20230826_103349164.jpg',
+    'PXL_20230826_111200529.jpg',
+    'PXL_20230826_112307367.jpg',
+    'PXL_20230827_090750210.jpg',
+    'PXL_20230827_090951496.jpg',
+    'PXL_20230827_095453373.jpg',
+    'PXL_20230827_095902304.jpg',
+    'PXL_20230828_092943682.jpg',
+    'PXL_20230828_094409856.jpg',
+    'PXL_20230828_105520400.jpg',
+    'PXL_20230828_165700018.jpg',
+    'received_1019424725750558.jpg',
+    'received_1238345047561422.jpg',
+    'received_1465211410961890.jpg',
+    'received_1553958621802137.jpg',
+    'received_202731759470482.jpg',
+    'received_255239490770075.jpg',
+    'received_628615502679559.jpg',
+    'received_6513588585423646.jpg',
+    'received_675016817874141.jpg',
+    'received_837069551015112.jpg',
+    'received_996595654890552.jpg',
+  ];
+
+  const gallery = document.getElementById('gallery');
+  photos.forEach((filename, i) => {
+    const url = BASE + encodeURIComponent(filename);
+    const div = document.createElement('div');
+    div.className = 'thumb';
+    const img = document.createElement('img');
+    img.alt = `Prague 2023 photo ${i + 1}`;
+    img.loading = 'lazy';
+    img.src = url;
+    img.addEventListener('load',  () => img.classList.add('loaded'));
+    img.addEventListener('error', () => img.classList.add('loaded'));
+    div.appendChild(img);
+    div.addEventListener('click', () => openLightbox(i));
+    gallery.appendChild(div);
+  });
+
+  const lightbox  = document.getElementById('lightbox');
+  const lbImg     = document.getElementById('lbImg');
+  const lbCounter = document.getElementById('lbCounter');
+  let current = 0;
+
+  function openLightbox(i) { current = i; showPhoto(); lightbox.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeLightbox()  { lightbox.classList.remove('open'); document.body.style.overflow = ''; lbImg.src = ''; }
+  function showPhoto()      { lbImg.src = BASE + encodeURIComponent(photos[current]); lbImg.alt = `Prague 2023 photo ${current + 1}`; lbCounter.textContent = `${current + 1} / ${photos.length}`; }
+  function prev() { current = (current - 1 + photos.length) % photos.length; showPhoto(); }
+  function next() { current = (current + 1) % photos.length; showPhoto(); }
+
+  document.getElementById('lbClose').addEventListener('click', closeLightbox);
+  document.getElementById('lbPrev').addEventListener('click', prev);
+  document.getElementById('lbNext').addEventListener('click', next);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'ArrowLeft')  prev();
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'Escape')     closeLightbox();
+  });
+</script>
+</body>
+</html>
