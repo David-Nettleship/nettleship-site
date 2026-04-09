@@ -7,17 +7,33 @@ A static family history website. No build step, no framework — plain HTML/CSS/
 ```
 nettleship-site/
 ├── webpages/
-│   ├── index.html                  # Home page
-│   ├── nettleship-mems.html        # Pat's memoirs
-│   ├── photos.html                 # Gallery of galleries
+│   ├── index.html                      # Home page
+│   ├── nettleship-mems.html            # Pat's memoirs
+│   ├── photos.html                     # Gallery of galleries
 │   ├── photos/
-│   │   ├── engagement.html         # Engagement photo gallery (90 photos)
-│   │   └── wedding.html            # Wedding photo gallery (635 photos)
+│   │   ├── gallery.css                 # Shared styles for all gallery pages
+│   │   ├── engagement.html             # Engagement photo gallery (90 photos)
+│   │   ├── wedding.html                # Wedding photo gallery (634 photos)
+│   │   └── holidays/
+│   │       ├── greece-2019.html        # Greece 2019 (197 photos)
+│   │       ├── prague-2023.html        # Prague 2023 (48 photos)
+│   │       ├── cotswolds-2024.html     # Cotswolds 2024 (60 photos)
+│   │       └── new-forest-2025.html    # New Forest 2025 (WIP)
 │   └── myheritage/
-│       ├── ethnicity.html          # DNA pie charts
-│       └── ethnicity.json          # Source ethnicity data
-└── infra/                          # Terraform — S3 + CloudFront
+│       ├── ethnicity.html              # DNA pie charts
+│       └── ethnicity.json              # Source ethnicity data
+└── infra/                              # Terraform — S3 + CloudFront
 ```
+
+## Gallery pages
+
+All gallery pages (`engagement.html`, `wedding.html`, `holidays/*.html`) use `gallery.css` for shared styles. Link it with a relative path:
+- From `webpages/photos/`: `<link rel="stylesheet" href="gallery.css">`
+- From `webpages/photos/holidays/`: `<link rel="stylesheet" href="../gallery.css">`
+
+Photos are served from CloudFront: `https://d1mdd4q3n2hv7r.cloudfront.net/<folder>/<filename>`. Holiday gallery filenames use `encodeURIComponent()` due to special characters; wedding/engagement use `.replace(/\+/g, '%2B')`.
+
+When adding a new gallery page, follow the pattern in an existing holiday page. Add a card for it in `photos.html`.
 
 ## Design system
 
@@ -41,7 +57,7 @@ All pages share the same CSS variables and visual style — keep new pages consi
 
 ## Navigation
 
-Every page has a `<nav class="site-nav">` above its `<header>` with a "← Nettleship Family" link back to `index.html` (use relative paths: `../index.html` from subdirectories).
+Every page has a `<nav class="site-nav">` above its `<header>` with a back link (use relative paths). Gallery pages link back to `photos.html`; top-level pages link back to `index.html`.
 
 ## Data
 
@@ -51,3 +67,5 @@ Every page has a `<nav class="site-nav">` above its `<header>` with a "← Nettl
 
 - `webpages/nettleship-mems.html` is a hand-authored HTML version of `nettleship-mems.md` — if the markdown is edited, the HTML should be kept in sync.
 - The memoir was written in 2014 by Pat Nettleship. Preserve her voice; only fix clear errors.
+- New Forest 2025 gallery is a work in progress — more photos will be added.
+- Cornwall 2025 gallery is planned but not yet created (placeholder card exists in `photos.html`).

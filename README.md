@@ -10,7 +10,11 @@ A static family history website. No build step — open any `.html` file directl
 | `webpages/nettleship-mems.html` | Personal memoirs written in 2014 by Pat Nettleship, covering life in Rotherham from the war years through to retirement |
 | `webpages/photos.html` | Gallery of galleries — links to all photo galleries |
 | `webpages/photos/engagement.html` | Photo gallery — David & Kathryn engagement shoot (90 photos) |
-| `webpages/photos/wedding.html` | Photo gallery — David & Kathryn wedding (635 photos) |
+| `webpages/photos/wedding.html` | Photo gallery — David & Kathryn wedding (634 photos) |
+| `webpages/photos/holidays/greece-2019.html` | Photo gallery — Greece 2019 (197 photos) |
+| `webpages/photos/holidays/prague-2023.html` | Photo gallery — Prague 2023 (48 photos) |
+| `webpages/photos/holidays/cotswolds-2024.html` | Photo gallery — Cotswolds 2024 (60 photos) |
+| `webpages/photos/holidays/new-forest-2025.html` | Photo gallery — New Forest 2025 (WIP) |
 | `webpages/myheritage/ethnicity.html` | DNA ethnicity pie charts for David and Kathryn (MyHeritage data, December 2025) |
 
 ## Data
@@ -28,8 +32,14 @@ nettleship-site/
 │   ├── nettleship-mems.html
 │   ├── photos.html
 │   ├── photos/
+│   │   ├── gallery.css              # Shared styles for all gallery pages
 │   │   ├── engagement.html
-│   │   └── wedding.html
+│   │   ├── wedding.html
+│   │   └── holidays/
+│   │       ├── greece-2019.html
+│   │       ├── prague-2023.html
+│   │       ├── cotswolds-2024.html
+│   │       └── new-forest-2025.html
 │   └── myheritage/
 │       ├── ethnicity.html
 │       └── ethnicity.json
@@ -65,7 +75,11 @@ https://d1mdd4q3n2hv7r.cloudfront.net/<path/to/photo.jpg>
 | S3 prefix | Gallery page | Photos |
 |-----------|-------------|--------|
 | `engagement/` | `engagement.html` | 90 |
-| `wedding/` | `wedding.html` | 635 |
+| `wedding/` | `wedding.html` | 634 |
+| `holidays/greece-2019/` | `greece-2019.html` | 197 |
+| `holidays/prague-2023/` | `prague-2023.html` | 48 |
+| `holidays/cotswolds-2024/` | `cotswolds-2024.html` | 60 |
+| `holidays/new-forest-2025/` | `new-forest-2025.html` | 25+ (WIP) |
 
 ### Adding photos
 
@@ -75,6 +89,10 @@ Before uploading, resize originals to 2000px max / 85% JPEG quality using `sips`
 mkdir web
 for f in *.jpg; do
   sips -Z 2000 --setProperty formatOptions 85 "$f" --out "web/$f" > /dev/null
+done
+# For .png files, convert to JPEG first:
+for f in *.png; do
+  sips -Z 2000 -s format jpeg --setProperty formatOptions 85 "$f" --out "web/${f%.png}.jpg" > /dev/null
 done
 aws s3 sync web/ s3://nettleship-photos/<folder>/ --content-type "image/jpeg"
 ```
@@ -97,28 +115,47 @@ terraform apply
 
 ## Cost expectations
 
-All costs are in USD (AWS bills in USD). At typical family photo gallery usage these should stay well within free tier or a few pence per month.
+All costs are in USD (AWS bills in USD).
 
-### S3 storage
+### Current storage
 
-| Scenario | Estimated size | Monthly cost |
-|----------|---------------|--------------|
-| 500 photos (web-optimised) | ~500 MB | ~$0.01 |
-| 1,000 photos | ~1 GB | ~$0.02 |
-| 5,000 photos | ~5 GB | ~$0.12 |
+The site currently holds roughly 1,050 photos, all resized to 2000px / 85% JPEG quality — approximately 1 MB each on average.
 
-S3 pricing: $0.023/GB/month (eu-west-2). First 5 GB is free in the first 12 months.
+| Folder | Photos | Approx. size |
+|--------|--------|-------------|
+| `wedding/` | 634 | ~634 MB |
+| `engagement/` | 90 | ~90 MB |
+| `holidays/greece-2019/` | 197 | ~197 MB |
+| `holidays/prague-2023/` | 48 | ~48 MB |
+| `holidays/cotswolds-2024/` | 60 | ~60 MB |
+| `holidays/new-forest-2025/` | 25+ | ~25 MB |
+| **Total** | **~1,054** | **~1.05 GB** |
+
+### S3 storage cost
+
+S3 in eu-west-2 costs **$0.023 per GB per month**.
+
+| Now (~1 GB) | At 2 GB | At 5 GB |
+|------------|---------|---------|
+| ~$0.02/mo | ~$0.05/mo | ~$0.12/mo |
+
+The first 5 GB is free for the first 12 months of an AWS account.
 
 ### CloudFront delivery
 
-CloudFront has a **permanent free tier** of 1 TB data transfer and 10 million requests per month — a family photo gallery will never come close to this. Effectively **free**.
+CloudFront has a **permanent free tier** of 1 TB data transfer and 10 million HTTP requests per month. A family photo site will never approach these limits — delivery cost is effectively **$0**.
 
-### Overall expectation
+### S3 request costs
 
-| Usage | Estimated monthly cost |
-|-------|----------------------|
-| Light (occasional family visits) | **< $0.05** |
-| Moderate (regular use, ~1 GB photos) | **< $0.10** |
-| Heavy (5 GB+, frequent access) | **< $0.50** |
+S3 charges $0.00043 per 1,000 GET requests. Even if every photo is loaded by 10 people, that's ~10,000 requests — less than **$0.01**.
 
-The only meaningful cost at this scale is S3 storage. CloudFront delivery and S3 request costs are negligible.
+### Summary
+
+| Cost component | Monthly cost |
+|---------------|-------------|
+| S3 storage (~1 GB today) | ~$0.02 |
+| CloudFront delivery | $0.00 (free tier) |
+| S3 GET requests | < $0.01 |
+| **Total** | **~$0.02–$0.05** |
+
+The only cost that grows over time is S3 storage as more galleries are added. At the current rate of ~1 MB per photo, adding another 500 photos adds roughly $0.01/month.
