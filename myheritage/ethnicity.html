@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ethnicity — David &amp; Kathryn</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #faf8f3;
+      --paper:    #fffef9;
+      --ink:      #2c2416;
+      --muted:    #7a6e5f;
+      --rule:     #d9d0c0;
+      --accent:   #8b3a2a;
+      --font-body: Georgia, 'Times New Roman', serif;
+      --font-ui:   system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 4px 4px 0 0;
+      border-bottom: none;
+      padding: 2rem 3rem 1.5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+
+    header p {
+      font-style: italic;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+      header { padding: 1.5rem 1.25rem 1rem; }
+      body { padding: 0.5rem 0.25rem 3rem; }
+    }
+
+    /* ── Cards ── */
+    .chart-card {
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-top: 2px solid var(--rule);
+      padding: 1.75rem 2rem 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+    }
+
+    .chart-card:first-child {
+      border-right: none;
+      border-radius: 0 0 0 4px;
+    }
+
+    .chart-card:last-child {
+      border-radius: 0 0 4px 0;
+    }
+
+    @media (max-width: 600px) {
+      .chart-card:first-child  { border-right: 1px solid var(--rule); border-bottom: none; border-radius: 0; }
+      .chart-card:last-child   { border-radius: 0 0 4px 4px; }
+    }
+
+    .chart-card h2 {
+      font-size: 0.85rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-family: var(--font-ui);
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .canvas-wrap {
+      position: relative;
+      height: 280px;
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── Legend ── */
+    .legend {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.3rem 0.75rem;
+    }
+
+    .legend li {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      font-family: var(--font-ui);
+      color: var(--ink);
+    }
+
+    .legend .pct {
+      margin-left: auto;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── Site nav ── */
+    .site-nav {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+    }
+    .site-nav a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+    .site-nav a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <nav class="site-nav" aria-label="Site navigation">
+    <a href="../index.html">← Nettleship Family</a>
+  </nav>
+
+  <header>
+    <h1>Ethnicity Estimates</h1>
+    <p>DNA data from MyHeritage, December 2025 — David &amp; Kathryn</p>
+  </header>
+
+  <div class="grid">
+    <section class="chart-card">
+      <h2>David</h2>
+      <div class="canvas-wrap">
+        <canvas id="chartDavid"></canvas>
+      </div>
+      <ul id="legendDavid" class="legend"></ul>
+    </section>
+
+    <section class="chart-card">
+      <h2>Kathryn</h2>
+      <div class="canvas-wrap">
+        <canvas id="chartKathryn"></canvas>
+      </div>
+      <ul id="legendKathryn" class="legend"></ul>
+    </section>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const data = {
+    David: {
+      English:              41.1,
+      'Scottish and Welsh': 35.9,
+      Irish:                10.8,
+      Dutch:                 4.9,
+      Danish:                4.0,
+      Breton:                1.9,
+      French:                1.4
+    },
+    Kathryn: {
+      English:              37.8,
+      'Scottish and Welsh': 31.0,
+      Irish:                12.7,
+      Dutch:                 6.6,
+      Danish:                4.0,
+      Breton:                3.8,
+      French:                2.6,
+      Germanic:              1.5
+    }
+  };
+
+  // Warm, distinct palette
+  const palette = [
+    '#8b3a2a', // accent red-brown
+    '#4a7c99', // steel blue
+    '#6a9e5a', // sage green
+    '#c47d2e', // amber
+    '#7a5c9e', // muted purple
+    '#c45c6a', // rose
+    '#4a8c7a', // teal
+    '#b07040'  // warm tan
+  ];
+
+  function buildChart(canvasId, legendId, block) {
+    const labels = Object.keys(block);
+    const values = Object.values(block);
+
+    new Chart(document.getElementById(canvasId), {
+      type: 'pie',
+      data: {
+        labels,
+        datasets: [{
+          data: values,
+          backgroundColor: palette.slice(0, labels.length),
+          borderColor: '#fffef9',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => ` ${ctx.label}: ${ctx.parsed.toFixed(1)}%`
+            }
+          }
+        }
+      }
+    });
+
+    const legend = document.getElementById(legendId);
+    legend.innerHTML = '';
+    labels.forEach((label, i) => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span class="dot" style="background:${palette[i]}"></span>
+        <span>${label}</span>
+        <span class="pct">${values[i].toFixed(1)}%</span>
+      `;
+      legend.appendChild(li);
+    });
+  }
+
+  buildChart('chartDavid',   'legendDavid',   data.David);
+  buildChart('chartKathryn', 'legendKathryn', data.Kathryn);
+</script>
+</body>
+</html>
