@@ -23,6 +23,8 @@ A static family history website. No build step — open any `.html` file directl
 | `webpages/photos/holidays/cotswolds-2024.html` | Photo gallery — Cotswolds 2024 (60 photos) |
 | `webpages/photos/holidays/new-forest-2025.html` | Photo gallery — New Forest 2025 (WIP) |
 | `webpages/photos/holidays/cornwall-2025.html` | Photo gallery — Cornwall 2025 (72 photos) |
+| `webpages/photos/alex-year-one.html` | Photo gallery — Alex, year one (176 photos) |
+| `webpages/photos/alex-is-two.html` | Photo gallery — Alex, age two (195 photos) |
 | `webpages/myheritage/ethnicity.html` | DNA ethnicity pie charts for David and Kathryn (MyHeritage data, December 2025) |
 
 ## Data
@@ -98,6 +100,8 @@ https://d1mdd4q3n2hv7r.cloudfront.net/<path/to/photo.jpg>
 | `holidays/cotswolds-2024/` | `cotswolds-2024.html` | 60 |
 | `holidays/new-forest-2025/` | `new-forest-2025.html` | 25+ (WIP) |
 | `holidays/cornwall-2025/` | `cornwall-2025.html` | 71 |
+| `alex/year-one/` | `alex-year-one.html` | 176 |
+| `alex/is-two/` | `alex-is-two.html` | 195 |
 
 ### Adding photos
 
@@ -156,7 +160,7 @@ All costs are in USD (AWS bills in USD).
 
 ### Current storage
 
-The site currently holds roughly 1,264 photos, all resized to 2000px / 85% JPEG quality — approximately 1 MB each on average.
+The site currently holds roughly 1,635 photos, all resized to 2000px / 85% JPEG quality — approximately 1 MB each on average.
 
 | Folder | Photos | Approx. size |
 |--------|--------|-------------|
@@ -173,15 +177,17 @@ The site currently holds roughly 1,264 photos, all resized to 2000px / 85% JPEG 
 | `holidays/new-forest-2025/` | 25+ | ~25 MB |
 | `holidays/florence-2017/` | 16 | ~13 MB |
 | `holidays/copenhagen-2016/` | 11 | ~8 MB |
-| **Total** | **~1,264** | **~1.26 GB** |
+| `alex/year-one/` | 176 | ~176 MB |
+| `alex/is-two/` | 195 | ~195 MB |
+| **Total** | **~1,635** | **~1.63 GB** |
 
 ### S3 storage cost
 
 S3 in eu-west-2 costs **$0.023 per GB per month**.
 
-| Now (~1.25 GB) | At 2 GB | At 5 GB |
+| Now (~1.63 GB) | At 2 GB | At 5 GB |
 |--------------|---------|---------|
-| ~$0.03/mo | ~$0.05/mo | ~$0.12/mo |
+| ~$0.04/mo | ~$0.05/mo | ~$0.12/mo |
 
 The first 5 GB is free for the first 12 months of an AWS account.
 
@@ -209,7 +215,7 @@ Lambda@Edge charges $0.60 per million requests + compute time. At family-scale t
 
 | Cost component | Monthly cost |
 |---------------|-------------|
-| S3 storage (~1.2 GB photos + negligible HTML) | ~$0.03 |
+| S3 storage (~1.6 GB photos + negligible HTML) | ~$0.04 |
 | CloudFront delivery (both distributions) | $0.00 (free tier) |
 | S3 GET requests | < $0.01 |
 | Lambda@Edge auth | ~$0.00 |

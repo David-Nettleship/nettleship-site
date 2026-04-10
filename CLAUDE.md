@@ -16,6 +16,8 @@ nettleship-site/
 │   │   ├── engagement.html             # Engagement photo gallery (90 photos)
 │   │   ├── wedding.html                # Wedding photo gallery (634 photos)
 │   │   ├── honeymoon.html              # Honeymoon photo gallery (38 photos)
+│   │   ├── alex-year-one.html          # Alex Year One (176 photos)
+│   │   ├── alex-is-two.html            # Alex Age Two (195 photos)
 │   │   └── holidays/
 │   │       ├── greece-2019.html        # Greece 2019 (197 photos)
 │   │       ├── florence-2017.html      # Florence 2017 (16 photos)

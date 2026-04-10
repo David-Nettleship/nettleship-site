@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alex — Age Two</title>
+  <link rel="stylesheet" href="gallery.css">
+</head>
+<body>
+<div class="page">
+
+  <nav class="site-nav" aria-label="Site navigation">
+    <a href="../photos.html">← Photo Galleries</a>
+  </nav>
+
+  <header>
+    <h1>Alex is Two!</h1>
+    <h3>Feb 2025 - Feb 2026</h3>
+    <br>
+    <p>195 photos</p>
+  </header>
+
+  <main class="grid" id="gallery"></main>
+
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lb-close" id="lbClose" aria-label="Close">&#x2715;</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous">&#x2039;</button>
+  <div class="lightbox-img-wrap"><img id="lbImg" src="" alt=""></div>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next">&#x203A;</button>
+  <div class="lb-counter" id="lbCounter"></div>
+</div>
+
+<script>
+  const BASE = 'https://d1mdd4q3n2hv7r.cloudfront.net/alex/is-two/';
+
+  const photos = [
+    'IMG_1829.jpeg',
+    'IMG_1925.jpeg',
+    'IMG_1932.jpeg',
+    'IMG_2086.jpeg',
+    'IMG_2160.jpeg',
+    'IMG_2165.jpeg',
+    'IMG_2174.jpeg',
+    'IMG_2213.jpeg',
+    'IMG_2306.jpeg',
+    'IMG_2331.JPG',
+    'IMG_2614.jpeg',
+    'IMG_2716.jpeg',
+    'IMG_2849.JPG',
+    'IMG_3020.jpeg',
+    'IMG_3026.jpeg',
+    'IMG_3062.jpeg',
+    '752f2c6d20cabb0a6d348f708865bac0.JPEG',
+    'att.wHPHQLmJedvQbqGqauy11YdmOcmPh103CsCsxFwL3HA.JPG',
+    '3948a13f-9256-43b2-99de-090ce9526e91.JPG',
+    'IMG_3385.jpeg',
+    'IMG_3398.jpeg',
+    'IMG_3450.jpeg',
+    'IMG_3488.jpeg',
+    'IMG_3540.jpeg',
+    'IMG_3566.jpeg',
+    'IMG_3616.jpeg',
+    'IMG_3783.jpeg',
+    'IMG_3919.jpeg',
+    'att.V6Lm03UVEk4Ky7WlEfcNQyUcFuhMAKGOh10nPKEkpbs.JPG',
+    'IMG_3986.jpeg',
+    'IMG_4100.jpeg',
+    'IMG_4168.jpeg',
+    'IMG_4261.jpeg',
+    'adce4ae1-b2cd-4056-b88b-cee92aa46400.JPG',
+    'IMG_4494.jpeg',
+    'IMG_4501.jpeg',
+    'IMG_4538.jpeg',
+    'IMG_4542.jpeg',
+    '8e9b84a4-3bf7-40f4-aa02-51a90fc65e2b.JPG',
+    '8e3b164d-5e49-414d-9bb2-ba8c49e6bf18.jpg',
+    'IMG_4774.jpeg',
+    'att.WyFzTyHA1HPz8gmsFPFutYNATG_0E07-e1DybdlGGdQ.JPG',
+    'IMG_5059.jpeg',
+    'IMG_5265.jpeg',
+    'IMG_5272.jpeg',
+    'IMG_5290.jpeg',
+    'IMG_5295.jpeg',
+    'IMG_5308.jpeg',
+    'IMG_5316.jpeg',
+    'att.p4MuPR4izuLUs4j_MsSbe4glCjTRGlQ_t_z5o9zAdJk.JPG',
+    'IMG_5411.jpeg',
+    'IMG_5479.jpeg',
+    'e12c246bce65647aa0e2ae3ed372bbc8.jpg',
+    'IMG_5530.jpeg',
+    'IMG_5551.jpeg',
+    'att.iYeEmuyVjSf3zrTThrDFloRY1Sfm6nBB7tI52rnLXpA.jpg',
+    'IMG_5607.jpeg',
+    'IMG_5669.jpeg',
+    'IMG_5670.jpeg',
+    'IMG_5760.jpeg',
+    'att._SSz9q9H0fJ9MVE0yUWXRSKlpI1KbmkL8i0w_pJ9yKY.JPG',
+    'att.nVH0nmXSYYND3v2OZmNLXs-2OeeN23Ta4TcwuPhI450.JPG',
+    'FullSizeRender.jpeg',
+    'IMG_5798.jpeg',
+    '43768bcd38351099551e1ef9e59052b4.jpg',
+    'IMG_5815.jpeg',
+    'IMG_5816.jpeg',
+    'IMG_5821.jpeg',
+    'att.U4k1DUzPOIoRsJa784sz4G9wREI1LqQGBWi9utrbcvg.JPG',
+    'att.xrqPjX7mm1H7Jut1TqRV3L2HrwX8kjYMOTGOjU0z7fU.JPG',
+    'IMG_5884.jpeg',
+    'IMG_5892.jpeg',
+    'IMG_5961.jpeg',
+    'IMG_6033.jpeg',
+    'IMG_6128.jpeg',
+    'IMG_6146.jpeg',
+    'IMG_6157.jpeg',
+    '72a88302-a2e1-4b63-90cb-21dfb5979eab.JPG',
+    'IMG_6450.jpeg',
+    'IMG_6464.jpeg',
+    '6afa3e44c11f7259113db18bf0de426f.JPEG',
+    '113c7349-a7c8-489b-9bb2-c3b30bfbb046.JPG',
+    'att.mbAjIHXQoMjbbmEZ8zdocxEkWhptizqrihJpsUA7V0g.JPG',
+    'IMG_6585.jpeg',
+    'IMG_6606.jpeg',
+    'FullSizeRender (1).jpeg',
+    'FullSizeRender (2).jpeg',
+    'IMG_6639.jpeg',
+    'IMG_6692.jpeg',
+    'IMG_1561.jpeg',
+    'att.6FJtLTDTVMYajQRa4XA__OZFIWZisDYSS9CvkKjElYE.JPG',
+    'FullSizeRender (3).jpeg',
+    'IMG_7449.jpeg',
+    'IMG_7453.jpeg',
+    'IMG_7623.jpeg',
+    'IMG_7624.jpeg',
+    'IMG_7639.jpeg',
+    'IMG_7666.jpeg',
+    'IMG_7676.jpeg',
+    'IMG_7965.jpeg',
+    'IMG_7971.jpeg',
+    'IMG_8173.jpeg',
+    'IMG_8291.jpeg',
+    'IMG_8297.jpeg',
+    'IMG_8391.jpeg',
+    'IMG_8394.jpeg',
+    'FullSizeRender (4).jpeg',
+    'FullSizeRender (5).jpeg',
+    'IMG_8498.jpeg',
+    'IMG_8504.jpeg',
+    'IMG_8578.jpeg',
+    'att.hNG5n647gw9XJNC38fKEEH0CXIzuBVuMTtOmwoJkfmM.JPG',
+    'IMG_8833.jpeg',
+    'att.3Aqj7wfARxDo5Itd05soeLBoNmJcPUcw5NHhhTPcD5Q.JPG',
+    'att.ZVFRuqhp9syR8wJ8QJoFYwJaDHYM8QKTc7Mk8fxfmeM.JPG',
+    'IMG_9564.jpeg',
+    'IMG_9589.jpeg',
+    'd4b842a0-7990-4c91-afa2-de1979100972.JPG',
+    'att.zIF96YanV540ZsJLvOYT-_0xdtT2WzQrJWsrnC_xdCg.JPG',
+    'IMG_9983.jpeg',
+    'IMG_9984.jpeg',
+    'IMG_9990.jpeg',
+    'IMG_0033.jpeg',
+    'att.I9uHZrIN3FXIgBeZBTWqJzyhkoo-LqPOIuZO59yEp3M.JPG',
+    '2b97947b-10f7-4fa9-824c-33d5c504841d.JPG',
+    '60355b31-9264-4fc7-a2f8-c839e748a54b.JPG',
+    'IMG_0710.jpeg',
+    'IMG_0713.jpeg',
+    'att.O3a3kL5Pr4ekIxJ55MU7kc0_BST-C8Wijrb7XTLIIVE.jpg',
+    'IMG_0912.jpeg',
+    'FullSizeRender (6).jpeg',
+    'IMG_0925.jpeg',
+    '78453a502b350fa8b56215410752a181.jpg',
+    'IMG_0961.jpeg',
+    'IMG_0964.jpeg',
+    'IMG_1096.jpeg',
+    'IMG_1098.jpeg',
+    'IMG_1100.jpeg',
+    '6405e89c-ed46-414e-9e44-4269e15f3a74.JPG',
+    '0a82a2c2-1b2d-4e48-83d0-6b15e9c453e4.JPG',
+    'a13b8f84-8666-4f4c-942e-36507171ffa4.JPG',
+    'IMG_1240.jpeg',
+    'IMG_1246.jpeg',
+    'att.gihmvV17WLZ0xkL7GWvW_NZy8JKSrxBoQVkp9dJ0ASg.JPG',
+    'IMG_1368.jpeg',
+    'IMG_1369.jpeg',
+    'IMG_1405.jpeg',
+    'IMG_1411.jpeg',
+    'IMG_1445.jpeg',
+    'IMG_1453.jpeg',
+    'att.YLbBsAAhziKVSgz6iXE9UG5E-f-acxcBgNki_9aFHpg.JPG',
+    'IMG_1858.jpeg',
+    'IMG_1861.jpeg',
+    'att.kWk-aqEu3BwuwDEWiA651HDwtVWFAu6aVh0NjpO6JVk.JPG',
+    'IMG_2047.jpeg',
+    'IMG_2062.jpeg',
+    'IMG_2107.jpeg',
+    'IMG_2111.jpeg',
+    'att.SSY_84uFxFu7IlHPPDuX_m1N7by_IrJdjC34ycG4d_A.JPG',
+    'IMG_2220.jpeg',
+    'IMG_2221.jpeg',
+    'IMG_2249.jpeg',
+    'IMG_2303.jpeg',
+    'att.Yh13DHDqVarQ0f7vB4b3wU2Nk0rqBZJkIoETnG9UfTU.JPG',
+    'att.1N5z9ClDYvNc1ZOwC8ts_wRSH-DRTlLKW5l1IVtW_EU.JPG',
+    'IMG_2430.jpeg',
+    'IMG_2446.jpeg',
+    'IMG_2465.jpeg',
+    'IMG_2505.jpeg',
+    'IMG_2514.jpeg',
+    'IMG_2537.jpeg',
+    'IMG_2672.jpeg',
+    'IMG_2682.jpeg',
+    'IMG_2721.jpeg',
+    'IMG_2952.jpeg',
+    'IMG_2962.jpeg',
+    'IMG_2965.jpeg',
+    'IMG_2967.jpeg',
+    'IMG_3145.jpeg',
+    'IMG_3171.jpeg',
+    'IMG_3173.jpeg',
+    'IMG_3203.jpeg',
+    'IMG_3205.jpeg',
+    'IMG_3301.jpeg',
+    'IMG_3307.jpeg',
+    'att._5uLlo3KifyWgLk8ECR7wfQshd_euJBECcD5dm3xUG8.jpg',
+    'IMG_3392.jpeg',
+    'IMG_3401.jpeg',
+    'att.eil7W-vxR4ONgugPWUUdsAU9sQxN8OGNBQnBLZuZN_g.JPG',
+    'att.bEoJmABaUdJAs1ZTQcbXotRqcn9qSjOLmA5xLUCN8-o.JPG',
+    'IMG_3473.jpeg',
+    'IMG_3480.jpeg',
+    'IMG_3485.jpeg',
+    'IMG_3495.jpeg',
+    'att.0-oa098LriSDKsGNqxAKweWoQ5ujJzghy_3NramjVRI.JPG',
+  ];
+
+  const gallery = document.getElementById('gallery');
+  photos.forEach((filename, i) => {
+    const url = BASE + encodeURIComponent(filename);
+    const div = document.createElement('div');
+    div.className = 'thumb';
+    const img = document.createElement('img');
+    img.alt = `Alex Age Two photo ${i + 1}`;
+    img.loading = 'lazy';
+    img.src = url;
+    img.addEventListener('load',  () => img.classList.add('loaded'));
+    img.addEventListener('error', () => img.classList.add('loaded'));
+    div.appendChild(img);
+    div.addEventListener('click', () => openLightbox(i));
+    gallery.appendChild(div);
+  });
+
+  const lightbox  = document.getElementById('lightbox');
+  const lbImg     = document.getElementById('lbImg');
+  const lbCounter = document.getElementById('lbCounter');
+  let current = 0;
+
+  function openLightbox(i) { current = i; showPhoto(); lightbox.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeLightbox()  { lightbox.classList.remove('open'); document.body.style.overflow = ''; lbImg.src = ''; }
+  function showPhoto()      { lbImg.src = BASE + encodeURIComponent(photos[current]); lbImg.alt = `Alex Age Two photo ${current + 1}`; lbCounter.textContent = `${current + 1} / ${photos.length}`; }
+  function prev() { current = (current - 1 + photos.length) % photos.length; showPhoto(); }
+  function next() { current = (current + 1) % photos.length; showPhoto(); }
+
+  document.getElementById('lbClose').addEventListener('click', closeLightbox);
+  document.getElementById('lbPrev').addEventListener('click', prev);
+  document.getElementById('lbNext').addEventListener('click', next);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'ArrowLeft')  prev();
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'Escape')     closeLightbox();
+  });
+</script>
+</body>
+</html>
