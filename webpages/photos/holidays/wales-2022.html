@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wales 2022</title>
+  <link rel="stylesheet" href="../gallery.css">
+</head>
+<body>
+<div class="page">
+
+  <nav class="site-nav" aria-label="Site navigation">
+    <a href="../../photos.html">← Photo Galleries</a>
+  </nav>
+
+  <header>
+    <h1>Wales 2022</h1>
+    <h3>Brecon Beacons, Hay on Wye</h3>
+    <br>
+    <p>July 2022 &mdash; 31 photos</p>
+  </header>
+
+  <main class="grid" id="gallery"></main>
+
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lb-close" id="lbClose" aria-label="Close">&#x2715;</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous">&#x2039;</button>
+  <div class="lightbox-img-wrap"><img id="lbImg" src="" alt=""></div>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next">&#x203A;</button>
+  <div class="lb-counter" id="lbCounter"></div>
+</div>
+
+<script>
+  const BASE = 'https://d1mdd4q3n2hv7r.cloudfront.net/holidays/wales-2022/';
+
+  const photos = [
+    'PXL_20220703_200749775.jpg',
+    'PXL_20220703_202026937.jpg',
+    'PXL_20220704_095844656.jpg',
+    'PXL_20220704_125046518.jpg',
+    'PXL_20220704_125413696.jpg',
+    'PXL_20220704_132233086.jpg',
+    'PXL_20220704_134401957.jpg',
+    'PXL_20220704_142545155.jpg',
+    'PXL_20220704_143237154.jpg',
+    'PXL_20220704_143646249.jpg',
+    'PXL_20220706_104122518.jpg',
+    'PXL_20220706_112036100.jpg',
+    'PXL_20220706_112249413.jpg',
+    'PXL_20220706_113404273.jpg',
+    'PXL_20220706_114050147.jpg',
+    'PXL_20220706_124513480.jpg',
+    'PXL_20220706_130707599.jpg',
+    'PXL_20220706_131043534.jpg',
+    'PXL_20220707_104044239.jpg',
+    'PXL_20220707_110511570.jpg',
+    'PXL_20220707_115325159.jpg',
+    'PXL_20220708_113720332.jpg',
+    'PXL_20220708_113911504.jpg',
+    'PXL_20220708_122726448.jpg',
+    'PXL_20220708_122851158.jpg',
+    'PXL_20220708_124844149.jpg',
+    'PXL_20220708_130606517.jpg',
+    'PXL_20220708_141454542.jpg',
+    'PXL_20220708_143514527.jpg',
+    'PXL_20220708_145315249.jpg',
+    'PXL_20220708_155701149.jpg',
+  ];
+
+  const gallery = document.getElementById('gallery');
+  photos.forEach((filename, i) => {
+    const url = BASE + encodeURIComponent(filename);
+    const div = document.createElement('div');
+    div.className = 'thumb';
+    const img = document.createElement('img');
+    img.alt = `Wales 2022 photo ${i + 1}`;
+    img.loading = 'lazy';
+    img.src = url;
+    img.addEventListener('load',  () => img.classList.add('loaded'));
+    img.addEventListener('error', () => img.classList.add('loaded'));
+    div.appendChild(img);
+    div.addEventListener('click', () => openLightbox(i));
+    gallery.appendChild(div);
+  });
+
+  const lightbox  = document.getElementById('lightbox');
+  const lbImg     = document.getElementById('lbImg');
+  const lbCounter = document.getElementById('lbCounter');
+  let current = 0;
+
+  function openLightbox(i) { current = i; showPhoto(); lightbox.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeLightbox()  { lightbox.classList.remove('open'); document.body.style.overflow = ''; lbImg.src = ''; }
+  function showPhoto()      { lbImg.src = BASE + encodeURIComponent(photos[current]); lbImg.alt = `Wales 2022 photo ${current + 1}`; lbCounter.textContent = `${current + 1} / ${photos.length}`; }
+  function prev() { current = (current - 1 + photos.length) % photos.length; showPhoto(); }
+  function next() { current = (current + 1) % photos.length; showPhoto(); }
+
+  document.getElementById('lbClose').addEventListener('click', closeLightbox);
+  document.getElementById('lbPrev').addEventListener('click', prev);
+  document.getElementById('lbNext').addEventListener('click', next);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'ArrowLeft')  prev();
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'Escape')     closeLightbox();
+  });
+</script>
+</body>
+</html>

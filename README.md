@@ -16,6 +16,8 @@ A static family history website. No build step — open any `.html` file directl
 | `webpages/photos/holidays/florence-2017.html` | Photo gallery — Florence 2017 (16 photos) |
 | `webpages/photos/holidays/copenhagen-2016.html` | Photo gallery — Copenhagen 2016 (11 photos) |
 | `webpages/photos/holidays/prague-2023.html` | Photo gallery — Prague 2023 (48 photos) |
+| `webpages/photos/holidays/wales-2022.html` | Photo gallery — Wales 2022 (31 photos) |
+| `webpages/photos/holidays/wales-2023.html` | Photo gallery — Wales 2023 (35 photos) |
 | `webpages/photos/holidays/cotswolds-2024.html` | Photo gallery — Cotswolds 2024 (60 photos) |
 | `webpages/photos/holidays/new-forest-2025.html` | Photo gallery — New Forest 2025 (WIP) |
 | `webpages/photos/holidays/cornwall-2025.html` | Photo gallery — Cornwall 2025 (72 photos) |
@@ -85,6 +87,7 @@ https://d1mdd4q3n2hv7r.cloudfront.net/<path/to/photo.jpg>
 | `holidays/greece-2019/` | `greece-2019.html` | 197 |
 | `holidays/florence-2017/` | `florence-2017.html` | 16 |
 | `holidays/copenhagen-2016/` | `copenhagen-2016.html` | 11 |
+| `holidays/wales-2022/` | `wales-2022.html` | 31 |
 | `holidays/prague-2023/` | `prague-2023.html` | 48 |
 | `holidays/cotswolds-2024/` | `cotswolds-2024.html` | 60 |
 | `holidays/new-forest-2025/` | `new-forest-2025.html` | 25+ (WIP) |
@@ -128,7 +131,7 @@ All costs are in USD (AWS bills in USD).
 
 ### Current storage
 
-The site currently holds roughly 1,190 photos, all resized to 2000px / 85% JPEG quality — approximately 1 MB each on average.
+The site currently holds roughly 1,256 photos, all resized to 2000px / 85% JPEG quality — approximately 1 MB each on average.
 
 | Folder | Photos | Approx. size |
 |--------|--------|-------------|
@@ -139,16 +142,18 @@ The site currently holds roughly 1,190 photos, all resized to 2000px / 85% JPEG 
 | `holidays/prague-2023/` | 48 | ~48 MB |
 | `holidays/cotswolds-2024/` | 60 | ~60 MB |
 | `holidays/cornwall-2025/` | 71 | ~71 MB |
+| `holidays/wales-2022/` | 31 | ~31 MB |
+| `holidays/wales-2023/` | 35 | ~35 MB |
 | `holidays/new-forest-2025/` | 25+ | ~25 MB |
 | `holidays/florence-2017/` | 16 | ~13 MB |
 | `holidays/copenhagen-2016/` | 11 | ~8 MB |
-| **Total** | **~1,190** | **~1.18 GB** |
+| **Total** | **~1,256** | **~1.25 GB** |
 
 ### S3 storage cost
 
 S3 in eu-west-2 costs **$0.023 per GB per month**.
 
-| Now (~1.2 GB) | At 2 GB | At 5 GB |
+| Now (~1.25 GB) | At 2 GB | At 5 GB |
 |--------------|---------|---------|
 | ~$0.03/mo | ~$0.05/mo | ~$0.12/mo |
 
@@ -166,7 +171,7 @@ S3 charges $0.00043 per 1,000 GET requests. Even if every photo is loaded by 10 
 
 | Cost component | Monthly cost |
 |---------------|-------------|
-| S3 storage (~1 GB today) | ~$0.02 |
+| S3 storage (~1.2 GB today) | ~$0.03 |
 | CloudFront delivery | $0.00 (free tier) |
 | S3 GET requests | < $0.01 |
 | **Total** | **~$0.02–$0.05** |

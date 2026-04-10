@@ -20,6 +20,8 @@ nettleship-site/
 │   │       ├── florence-2017.html      # Florence 2017 (16 photos)
 │   │       ├── copenhagen-2016.html    # Copenhagen 2016 (11 photos)
 │   │       ├── prague-2023.html        # Prague 2023 (48 photos)
+│   │       ├── wales-2023.html         # Wales 2023 (35 photos)
+│   │       ├── wales-2022.html         # Wales 2022 (31 photos)
 │   │       ├── cotswolds-2024.html     # Cotswolds 2024 (60 photos)
 │   │       ├── cornwall-2025.html      # Cornwall 2025 (72 photos)
 │   │       └── new-forest-2025.html    # New Forest 2025 (WIP)
@@ -37,7 +39,14 @@ All gallery pages (`engagement.html`, `wedding.html`, `holidays/*.html`) use `ga
 
 Photos are served from CloudFront: `https://d1mdd4q3n2hv7r.cloudfront.net/<folder>/<filename>`. Holiday gallery filenames use `encodeURIComponent()` due to special characters; wedding/engagement use `.replace(/\+/g, '%2B')`.
 
-When adding a new gallery page, follow the pattern in an existing holiday page. Add a card for it in `photos.html`.
+When adding a new gallery page, follow the pattern in an existing holiday page. Complete all of these steps — do not skip any:
+
+1. Create the gallery HTML file in `webpages/photos/holidays/`
+2. Add a card in `photos.html` (live card, not a todo placeholder)
+3. Resize photos: `sips -Z 2000 --setProperty formatOptions 85` into a `web/` subfolder
+4. Upload: `aws s3 sync web/ s3://nettleship-photos/holidays/<folder>/ --content-type "image/jpeg"`
+5. Update `README.md`: add a row to the Pages table, the Photo folders table, the storage breakdown table, and revise the totals (photo count, GB, monthly cost)
+6. Update `CLAUDE.md`: add the file to the structure tree
 
 ## Design system
 

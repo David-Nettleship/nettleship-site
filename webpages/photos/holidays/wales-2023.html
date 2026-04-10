@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wales 2023</title>
+  <link rel="stylesheet" href="../gallery.css">
+</head>
+<body>
+<div class="page">
+
+  <nav class="site-nav" aria-label="Site navigation">
+    <a href="../../photos.html">← Photo Galleries</a>
+  </nav>
+
+  <header>
+    <h1>Wales 2023</h1>
+    <p>June 2023 &mdash; 35 photos</p>
+  </header>
+
+  <main class="grid" id="gallery"></main>
+
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lb-close" id="lbClose" aria-label="Close">&#x2715;</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous">&#x2039;</button>
+  <div class="lightbox-img-wrap"><img id="lbImg" src="" alt=""></div>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next">&#x203A;</button>
+  <div class="lb-counter" id="lbCounter"></div>
+</div>
+
+<script>
+  const BASE = 'https://d1mdd4q3n2hv7r.cloudfront.net/holidays/wales-2023/';
+
+  const photos = [
+    'PXL_20230619_150844274.jpg',
+    'PXL_20230619_151156560.jpg',
+    'PXL_20230619_173250502.jpg',
+    'PXL_20230620_120738838.jpg',
+    'PXL_20230620_121540128.jpg',
+    'PXL_20230620_122049338.jpg',
+    'PXL_20230621_105306490.jpg',
+    'PXL_20230621_105328358.jpg',
+    'PXL_20230621_113153542.jpg',
+    'PXL_20230621_172649466.jpg',
+    'PXL_20230622_095850741.jpg',
+    'PXL_20230622_101713767.jpg',
+    'PXL_20230622_112159851.jpg',
+    'PXL_20230622_112551487.jpg',
+    'PXL_20230622_112822512.jpg',
+    'PXL_20230622_114638210.jpg',
+    'PXL_20230622_131614466.jpg',
+    'PXL_20230622_144043606.jpg',
+    'PXL_20230622_144541645.jpg',
+    'PXL_20230622_165041595.jpg',
+    'PXL_20230623_105411527.jpg',
+    'PXL_20230623_111647735.jpg',
+    'PXL_20230623_111920600.jpg',
+    'PXL_20230623_112117603.jpg',
+    'PXL_20230623_173631734.jpg',
+    'PXL_20230624_115247127.jpg',
+    'PXL_20230624_131852015.jpg',
+    'PXL_20230625_091304356.jpg',
+    'PXL_20230626_102514874.jpg',
+    'PXL_20230626_103436895.jpg',
+    'received_280333584560136.jpg',
+    'received_282061520973906.jpg',
+    'received_585981730228589.jpg',
+    'received_589144586690616.jpg',
+    'received_783621353471353.jpg',
+  ];
+
+  const gallery = document.getElementById('gallery');
+  photos.forEach((filename, i) => {
+    const url = BASE + encodeURIComponent(filename);
+    const div = document.createElement('div');
+    div.className = 'thumb';
+    const img = document.createElement('img');
+    img.alt = `Wales 2023 photo ${i + 1}`;
+    img.loading = 'lazy';
+    img.src = url;
+    img.addEventListener('load',  () => img.classList.add('loaded'));
+    img.addEventListener('error', () => img.classList.add('loaded'));
+    div.appendChild(img);
+    div.addEventListener('click', () => openLightbox(i));
+    gallery.appendChild(div);
+  });
+
+  const lightbox  = document.getElementById('lightbox');
+  const lbImg     = document.getElementById('lbImg');
+  const lbCounter = document.getElementById('lbCounter');
+  let current = 0;
+
+  function openLightbox(i) { current = i; showPhoto(); lightbox.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeLightbox()  { lightbox.classList.remove('open'); document.body.style.overflow = ''; lbImg.src = ''; }
+  function showPhoto()      { lbImg.src = BASE + encodeURIComponent(photos[current]); lbImg.alt = `Wales 2023 photo ${current + 1}`; lbCounter.textContent = `${current + 1} / ${photos.length}`; }
+  function prev() { current = (current - 1 + photos.length) % photos.length; showPhoto(); }
+  function next() { current = (current + 1) % photos.length; showPhoto(); }
+
+  document.getElementById('lbClose').addEventListener('click', closeLightbox);
+  document.getElementById('lbPrev').addEventListener('click', prev);
+  document.getElementById('lbNext').addEventListener('click', next);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'ArrowLeft')  prev();
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'Escape')     closeLightbox();
+  });
+</script>
+</body>
+</html>
