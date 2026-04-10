@@ -30,7 +30,17 @@ nettleship-site/
 │   └── myheritage/
 │       ├── ethnicity.html              # DNA pie charts
 │       └── ethnicity.json              # Source ethnicity data
-└── infra/                              # Terraform — S3 + CloudFront
+└── infra/                              # Terraform — S3 + CloudFront + Lambda@Edge
+    ├── backend.tf                      # Remote state (S3)
+    ├── providers.tf                    # AWS (eu-west-2 + us-east-1 alias) + archive
+    ├── s3.tf                           # Photos S3 bucket + OAC policy
+    ├── cloudfront.tf                   # Photos CloudFront distribution
+    ├── site_s3.tf                      # Site HTML/CSS/JS S3 bucket + OAC policy
+    ├── site_cloudfront.tf              # Site CloudFront distribution (with auth)
+    ├── site_lambda.tf                  # Lambda@Edge Basic Auth + IAM role
+    ├── lambda/
+    │   └── auth.js.tpl                 # Auth Lambda template (password injected at plan time)
+    └── outputs.tf                      # Exports: photo CDN domain, site URL
 ```
 
 ## Gallery pages
@@ -78,6 +88,31 @@ Every page has a `<nav class="site-nav">` above its `<header>` with a back link 
 ## Data
 
 `webpages/myheritage/ethnicity.json` is the source of truth for DNA percentages. Edit that file if figures need updating, then reflect changes in `ethnicity.html`.
+
+## Infrastructure
+
+The site is hosted on AWS. Two separate CloudFront distributions:
+
+| Distribution | Bucket | Purpose |
+|---|---|---|
+| `d1mdd4q3n2hv7r.cloudfront.net` | `nettleship-photos` | Photo CDN |
+| see `site_url` Terraform output | `nettleship-site` | Site HTML/CSS/JS |
+
+The site distribution is protected by HTTP Basic Auth via Lambda@Edge (username: `nettleship`). The password is stored in AWS Secrets Manager at `nettleship/site/auth-password` (eu-west-2) and baked into the Lambda at `terraform apply` time. Lambda@Edge must be deployed in `us-east-1` — the `providers.tf` alias handles this.
+
+To deploy site changes:
+```bash
+aws s3 sync webpages/ s3://nettleship-site/ --delete
+```
+
+To rotate the password:
+```bash
+aws secretsmanager put-secret-value \
+  --secret-id "nettleship/site/auth-password" \
+  --secret-string "newpassword" \
+  --region eu-west-2
+cd infra && terraform apply
+```
 
 ## Content notes
 

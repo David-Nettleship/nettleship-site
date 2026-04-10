@@ -69,10 +69,14 @@ Photo hosting is managed via Terraform in the `infra/` directory, using AWS S3 +
 | Resource | Name/ID | Description |
 |----------|---------|-------------|
 | S3 bucket | `nettleship-photos` | Private photo storage — `eu-west-2` |
+| S3 bucket | `nettleship-site` | Private site file storage — `eu-west-2` |
 | CloudFront distribution | `E309FJ8CWXBZ9` | CDN — serves photos over HTTPS |
 | CloudFront domain | `d1mdd4q3n2hv7r.cloudfront.net` | Base URL for all photo references |
+| CloudFront distribution | (see outputs) | CDN — serves site HTML/CSS/JS over HTTPS |
+| Lambda@Edge | `nettleship-site-auth` | HTTP Basic Auth — deployed in `us-east-1` |
+| Secrets Manager secret | `nettleship/site/auth-password` | Site login password — `eu-west-2` |
 
-The bucket is private with all public access blocked. CloudFront accesses it via Origin Access Control (OAC), so photos are only reachable through the CDN.
+Both buckets are private with all public access blocked. CloudFront accesses them via Origin Access Control (OAC). The site distribution requires HTTP Basic Auth, handled by a Lambda@Edge viewer-request function.
 
 Photos should be referenced in HTML as:
 ```
@@ -127,6 +131,25 @@ terraform plan
 terraform apply
 ```
 
+### Deploying site files
+
+After applying infra, sync the HTML/CSS/JS to the site bucket:
+
+```bash
+aws s3 sync webpages/ s3://nettleship-site/ --delete
+```
+
+### Rotating the site password
+
+```bash
+aws secretsmanager put-secret-value \
+  --secret-id "nettleship/site/auth-password" \
+  --secret-string "newpassword" \
+  --region eu-west-2
+
+cd infra && terraform apply  # redeploys Lambda with new password
+```
+
 ## Cost expectations
 
 All costs are in USD (AWS bills in USD).
@@ -170,13 +193,27 @@ CloudFront has a **permanent free tier** of 1 TB data transfer and 10 million HT
 
 S3 charges $0.00043 per 1,000 GET requests. Even if every photo is loaded by 10 people, that's ~10,000 requests — less than **$0.01**.
 
+### Secrets Manager
+
+AWS Secrets Manager charges **$0.40 per secret per month**.
+
+| Secrets | Monthly cost |
+|---------|-------------|
+| 1 (`nettleship/site/auth-password`) | $0.40 |
+
+### Lambda@Edge
+
+Lambda@Edge charges $0.60 per million requests + compute time. At family-scale traffic (well under 1,000 requests/month) the cost is effectively **$0**.
+
 ### Summary
 
 | Cost component | Monthly cost |
 |---------------|-------------|
-| S3 storage (~1.2 GB today) | ~$0.03 |
-| CloudFront delivery | $0.00 (free tier) |
+| S3 storage (~1.2 GB photos + negligible HTML) | ~$0.03 |
+| CloudFront delivery (both distributions) | $0.00 (free tier) |
 | S3 GET requests | < $0.01 |
-| **Total** | **~$0.02–$0.05** |
+| Lambda@Edge auth | ~$0.00 |
+| Secrets Manager (1 secret) | $0.40 |
+| **Total** | **~$0.43–$0.50** |
 
-The only cost that grows over time is S3 storage as more galleries are added. At the current rate of ~1 MB per photo, adding another 500 photos adds roughly $0.01/month.
+The dominant cost is now the Secrets Manager secret at a flat $0.40/month. S3 storage grows slowly as more galleries are added (~$0.01/month per 500 photos).

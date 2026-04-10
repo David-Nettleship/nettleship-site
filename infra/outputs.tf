@@ -17,3 +17,13 @@ output "cloudfront_distribution_id" {
   description = "CloudFront distribution ID"
   value       = aws_cloudfront_distribution.photos.id
 }
+
+output "site_url" {
+  description = "URL of the family site — share this with family"
+  value       = "https://${aws_cloudfront_distribution.site.domain_name}"
+}
+
+output "site_cloudfront_distribution_id" {
+  description = "CloudFront distribution ID for the site"
+  value       = aws_cloudfront_distribution.site.id
+}
