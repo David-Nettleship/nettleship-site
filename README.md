@@ -11,10 +11,14 @@ A static family history website. No build step — open any `.html` file directl
 | `webpages/photos.html` | Gallery of galleries — links to all photo galleries |
 | `webpages/photos/engagement.html` | Photo gallery — David & Kathryn engagement shoot (90 photos) |
 | `webpages/photos/wedding.html` | Photo gallery — David & Kathryn wedding (634 photos) |
+| `webpages/photos/honeymoon.html` | Photo gallery — David & Kathryn honeymoon, September 2021 (38 photos) |
 | `webpages/photos/holidays/greece-2019.html` | Photo gallery — Greece 2019 (197 photos) |
+| `webpages/photos/holidays/florence-2017.html` | Photo gallery — Florence 2017 (16 photos) |
+| `webpages/photos/holidays/copenhagen-2016.html` | Photo gallery — Copenhagen 2016 (11 photos) |
 | `webpages/photos/holidays/prague-2023.html` | Photo gallery — Prague 2023 (48 photos) |
 | `webpages/photos/holidays/cotswolds-2024.html` | Photo gallery — Cotswolds 2024 (60 photos) |
 | `webpages/photos/holidays/new-forest-2025.html` | Photo gallery — New Forest 2025 (WIP) |
+| `webpages/photos/holidays/cornwall-2025.html` | Photo gallery — Cornwall 2025 (72 photos) |
 | `webpages/myheritage/ethnicity.html` | DNA ethnicity pie charts for David and Kathryn (MyHeritage data, December 2025) |
 
 ## Data
@@ -35,6 +39,7 @@ nettleship-site/
 │   │   ├── gallery.css              # Shared styles for all gallery pages
 │   │   ├── engagement.html
 │   │   ├── wedding.html
+│   │   ├── honeymoon.html
 │   │   └── holidays/
 │   │       ├── greece-2019.html
 │   │       ├── prague-2023.html
@@ -76,10 +81,14 @@ https://d1mdd4q3n2hv7r.cloudfront.net/<path/to/photo.jpg>
 |-----------|-------------|--------|
 | `engagement/` | `engagement.html` | 90 |
 | `wedding/` | `wedding.html` | 634 |
+| `honeymoon/` | `honeymoon.html` | 38 |
 | `holidays/greece-2019/` | `greece-2019.html` | 197 |
+| `holidays/florence-2017/` | `florence-2017.html` | 16 |
+| `holidays/copenhagen-2016/` | `copenhagen-2016.html` | 11 |
 | `holidays/prague-2023/` | `prague-2023.html` | 48 |
 | `holidays/cotswolds-2024/` | `cotswolds-2024.html` | 60 |
 | `holidays/new-forest-2025/` | `new-forest-2025.html` | 25+ (WIP) |
+| `holidays/cornwall-2025/` | `cornwall-2025.html` | 71 |
 
 ### Adding photos
 
@@ -119,25 +128,29 @@ All costs are in USD (AWS bills in USD).
 
 ### Current storage
 
-The site currently holds roughly 1,050 photos, all resized to 2000px / 85% JPEG quality — approximately 1 MB each on average.
+The site currently holds roughly 1,190 photos, all resized to 2000px / 85% JPEG quality — approximately 1 MB each on average.
 
 | Folder | Photos | Approx. size |
 |--------|--------|-------------|
 | `wedding/` | 634 | ~634 MB |
 | `engagement/` | 90 | ~90 MB |
+| `honeymoon/` | 38 | ~40 MB |
 | `holidays/greece-2019/` | 197 | ~197 MB |
 | `holidays/prague-2023/` | 48 | ~48 MB |
 | `holidays/cotswolds-2024/` | 60 | ~60 MB |
+| `holidays/cornwall-2025/` | 71 | ~71 MB |
 | `holidays/new-forest-2025/` | 25+ | ~25 MB |
-| **Total** | **~1,054** | **~1.05 GB** |
+| `holidays/florence-2017/` | 16 | ~13 MB |
+| `holidays/copenhagen-2016/` | 11 | ~8 MB |
+| **Total** | **~1,190** | **~1.18 GB** |
 
 ### S3 storage cost
 
 S3 in eu-west-2 costs **$0.023 per GB per month**.
 
-| Now (~1 GB) | At 2 GB | At 5 GB |
-|------------|---------|---------|
-| ~$0.02/mo | ~$0.05/mo | ~$0.12/mo |
+| Now (~1.2 GB) | At 2 GB | At 5 GB |
+|--------------|---------|---------|
+| ~$0.03/mo | ~$0.05/mo | ~$0.12/mo |
 
 The first 5 GB is free for the first 12 months of an AWS account.
 

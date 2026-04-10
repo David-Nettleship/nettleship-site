@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Florence 2017</title>
+  <link rel="stylesheet" href="../gallery.css">
+</head>
+<body>
+<div class="page">
+
+  <nav class="site-nav" aria-label="Site navigation">
+    <a href="../../photos.html">← Photo Galleries</a>
+  </nav>
+
+  <header>
+    <h1>Florence 2017</h1>
+    <p>April 2017 &mdash; 16 photos</p>
+  </header>
+
+  <main class="grid" id="gallery"></main>
+
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lb-close" id="lbClose" aria-label="Close">&#x2715;</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous">&#x2039;</button>
+  <div class="lightbox-img-wrap"><img id="lbImg" src="" alt=""></div>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next">&#x203A;</button>
+  <div class="lb-counter" id="lbCounter"></div>
+</div>
+
+<script>
+  const BASE = 'https://d1mdd4q3n2hv7r.cloudfront.net/holidays/florence-2017/';
+
+  const photos = [
+    '468600279_10162416117748619_2090203455713231004_n.jpg',
+    '468615332_10162416117743619_7006497952684803340_n.jpg',
+    '468615484_10162416121488619_3343578472353868107_n.jpg',
+    '468624185_10162416117763619_1528169489391351486_n.jpg',
+    '468662123_10162416121503619_1400234033928517003_n.jpg',
+    '468663268_10162416119838619_7056560286709062552_n.jpg',
+    '468732090_10162416121523619_1449288532999337082_n.jpg',
+    '468734499_10162416122933619_986659875646936942_n.jpg',
+    '468757336_10162416119848619_6722686432358868851_n.jpg',
+    '471429626_10162583364398619_6769405362941404267_n.jpg',
+    '471499018_10162583363183619_1561825284515085714_n.jpg',
+    '471566321_10162583364858619_7431705216086528781_n.jpg',
+    '471592116_10162583364478619_4352191441669073719_n.jpg',
+    '471840819_10162583359228619_7588487248788518401_n.jpg',
+    '471996696_10162583362743619_25954469479347962_n.jpg',
+    '640148515_10224420472539486_1982948920999891549_n.jpg',
+  ];
+
+  const gallery = document.getElementById('gallery');
+  photos.forEach((filename, i) => {
+    const url = BASE + encodeURIComponent(filename);
+    const div = document.createElement('div');
+    div.className = 'thumb';
+    const img = document.createElement('img');
+    img.alt = `Florence 2017 photo ${i + 1}`;
+    img.loading = 'lazy';
+    img.src = url;
+    img.addEventListener('load',  () => img.classList.add('loaded'));
+    img.addEventListener('error', () => img.classList.add('loaded'));
+    div.appendChild(img);
+    div.addEventListener('click', () => openLightbox(i));
+    gallery.appendChild(div);
+  });
+
+  const lightbox  = document.getElementById('lightbox');
+  const lbImg     = document.getElementById('lbImg');
+  const lbCounter = document.getElementById('lbCounter');
+  let current = 0;
+
+  function openLightbox(i) { current = i; showPhoto(); lightbox.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeLightbox()  { lightbox.classList.remove('open'); document.body.style.overflow = ''; lbImg.src = ''; }
+  function showPhoto()      { lbImg.src = BASE + encodeURIComponent(photos[current]); lbImg.alt = `Florence 2017 photo ${current + 1}`; lbCounter.textContent = `${current + 1} / ${photos.length}`; }
+  function prev() { current = (current - 1 + photos.length) % photos.length; showPhoto(); }
+  function next() { current = (current + 1) % photos.length; showPhoto(); }
+
+  document.getElementById('lbClose').addEventListener('click', closeLightbox);
+  document.getElementById('lbPrev').addEventListener('click', prev);
+  document.getElementById('lbNext').addEventListener('click', next);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'ArrowLeft')  prev();
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'Escape')     closeLightbox();
+  });
+</script>
+</body>
+</html>

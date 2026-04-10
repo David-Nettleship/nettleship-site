@@ -27,7 +27,7 @@
     }
 
     .page {
-      max-width: 720px;
+      max-width: 1100px;
       margin: 0 auto;
       background: var(--paper);
       border: 1px solid var(--rule);
@@ -92,8 +92,12 @@
     /* ── Cards ── */
     .cards {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
+    }
+
+    @media (max-width: 800px) {
+      .cards { grid-template-columns: repeat(2, 1fr); }
     }
 
     @media (max-width: 520px) {
@@ -180,17 +184,7 @@
     <div class="section">
       <h2 class="section-heading">David &amp; Kathryn</h2>
       <div class="cards">
-        <a class="card" href="photos/wedding.html">
-          <img class="card-preview-img"
-               src="https://d1mdd4q3n2hv7r.cloudfront.net/wedding/Kathryn%2BDavid-378.jpg"
-               alt="Wedding preview" loading="lazy">
-          <div class="card-body">
-            <div class="card-title">Wedding</div>
-            <div class="card-meta">David &amp; Kathryn &mdash; 634 photos</div>
-            <span class="card-arrow">View gallery →</span>
-          </div>
-        </a>
-        
+
         <a class="card" href="photos/engagement.html">
           <img class="card-preview-img"
                src="https://d1mdd4q3n2hv7r.cloudfront.net/engagement/Kathryn%2BDavid.jpg"
@@ -202,12 +196,50 @@
           </div>
         </a>
 
+        <a class="card" href="photos/wedding.html">
+          <img class="card-preview-img"
+               src="https://d1mdd4q3n2hv7r.cloudfront.net/wedding/Kathryn%2BDavid-378.jpg"
+               alt="Wedding preview" loading="lazy">
+          <div class="card-body">
+            <div class="card-title">Wedding</div>
+            <div class="card-meta">David &amp; Kathryn &mdash;  09 September 2021 &mdash; 634 photos</div>
+            <span class="card-arrow">View gallery →</span>
+          </div>
+        </a>
+
+        <a class="card" href="photos/honeymoon.html">
+          <img class="card-preview-img"
+               src="https://d1mdd4q3n2hv7r.cloudfront.net/honeymoon/PXL_20210915_140203363.jpg"
+               alt="Honeymoon preview" loading="lazy">
+          <div class="card-body">
+            <div class="card-title">Honeymoon</div>
+            <div class="card-meta">David &amp; Kathryn &mdash; 11-22 September 2021 &mdash; 38 photos</div>
+            <span class="card-arrow">View gallery →</span>
+          </div>
+        </a>
+
       </div>
     </div>
 
     <div class="section">
       <h2 class="section-heading">Family Holidays — 2024 and after</h2>
       <div class="cards">
+
+      <div class="card card-todo">
+          <div class="card-preview-img card-preview-placeholder"></div>
+          <div class="card-body">
+            <div class="card-title">Norfolk 2026</div>
+            <div class="card-meta">Coming soon</div>
+          </div>
+        </div>  
+
+      <div class="card card-todo">
+          <div class="card-preview-img card-preview-placeholder"></div>
+          <div class="card-body">
+            <div class="card-title">Lake District 2026</div>
+            <div class="card-meta">Coming soon</div>
+          </div>
+        </div>  
 
         <a class="card" href="photos/holidays/new-forest-2025.html">
           <img class="card-preview-img"
@@ -220,13 +252,16 @@
           </div>
         </a>
 
-        <div class="card card-todo">
-          <div class="card-preview-img card-preview-placeholder"></div>
+        <a class="card" href="photos/holidays/cornwall-2025.html">
+          <img class="card-preview-img"
+               src="https://d1mdd4q3n2hv7r.cloudfront.net/holidays/cornwall-2025/PXL_20250611_103848532.jpg"
+               alt="Cornwall 2025 preview" loading="lazy">
           <div class="card-body">
             <div class="card-title">Cornwall 2025</div>
-            <div class="card-meta">Coming soon</div>
+            <div class="card-meta">June 2025 &mdash; 71 photos</div>
+            <span class="card-arrow">View gallery →</span>
           </div>
-        </div>
+        </a>
 
         <a class="card" href="photos/holidays/cotswolds-2024.html">
           <img class="card-preview-img"
@@ -259,11 +294,33 @@
 
         <a class="card" href="photos/holidays/greece-2019.html">
           <img class="card-preview-img"
-               src="https://d1mdd4q3n2hv7r.cloudfront.net/holidays/greece-2019/received_675382626278213.jpg"
+               src="https://d1mdd4q3n2hv7r.cloudfront.net/holidays/greece-2019/IMG_20190910_101643.jpg"
                alt="Greece 2019 preview" loading="lazy">
           <div class="card-body">
             <div class="card-title">Greece 2019</div>
             <div class="card-meta">September 2019 &mdash; 197 photos</div>
+            <span class="card-arrow">View gallery →</span>
+          </div>
+        </a>
+
+        <a class="card" href="photos/holidays/florence-2017.html">
+          <img class="card-preview-img"
+               src="https://d1mdd4q3n2hv7r.cloudfront.net/holidays/florence-2017/468757336_10162416119848619_6722686432358868851_n.jpg"
+               alt="Florence 2017 preview" loading="lazy">
+          <div class="card-body">
+            <div class="card-title">Florence 2017</div>
+            <div class="card-meta">April 2017 &mdash; 16 photos</div>
+            <span class="card-arrow">View gallery →</span>
+          </div>
+        </a>
+
+        <a class="card" href="photos/holidays/copenhagen-2016.html">
+          <img class="card-preview-img"
+               src="https://d1mdd4q3n2hv7r.cloudfront.net/holidays/copenhagen-2016/471408127_10162572225178619_6488600809725391776_n.jpg"
+               alt="Copenhagen 2016 preview" loading="lazy">
+          <div class="card-body">
+            <div class="card-title">Copenhagen 2016</div>
+            <div class="card-meta">April 2016 &mdash; 11 photos</div>
             <span class="card-arrow">View gallery →</span>
           </div>
         </a>

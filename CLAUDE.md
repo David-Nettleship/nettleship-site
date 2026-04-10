@@ -14,10 +14,14 @@ nettleship-site/
 │   │   ├── gallery.css                 # Shared styles for all gallery pages
 │   │   ├── engagement.html             # Engagement photo gallery (90 photos)
 │   │   ├── wedding.html                # Wedding photo gallery (634 photos)
+│   │   ├── honeymoon.html              # Honeymoon photo gallery (38 photos)
 │   │   └── holidays/
 │   │       ├── greece-2019.html        # Greece 2019 (197 photos)
+│   │       ├── florence-2017.html      # Florence 2017 (16 photos)
+│   │       ├── copenhagen-2016.html    # Copenhagen 2016 (11 photos)
 │   │       ├── prague-2023.html        # Prague 2023 (48 photos)
 │   │       ├── cotswolds-2024.html     # Cotswolds 2024 (60 photos)
+│   │       ├── cornwall-2025.html      # Cornwall 2025 (72 photos)
 │   │       └── new-forest-2025.html    # New Forest 2025 (WIP)
 │   └── myheritage/
 │       ├── ethnicity.html              # DNA pie charts
@@ -68,4 +72,4 @@ Every page has a `<nav class="site-nav">` above its `<header>` with a back link 
 - `webpages/nettleship-mems.html` is a hand-authored HTML version of `nettleship-mems.md` — if the markdown is edited, the HTML should be kept in sync.
 - The memoir was written in 2014 by Pat Nettleship. Preserve her voice; only fix clear errors.
 - New Forest 2025 gallery is a work in progress — more photos will be added.
-- Cornwall 2025 gallery is planned but not yet created (placeholder card exists in `photos.html`).
+- Cornwall 2025 gallery: 71 photos, June 2025.

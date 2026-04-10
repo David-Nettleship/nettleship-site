@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cornwall 2025</title>
+  <link rel="stylesheet" href="../gallery.css">
+</head>
+<body>
+<div class="page">
+
+  <nav class="site-nav" aria-label="Site navigation">
+    <a href="../../photos.html">← Photo Galleries</a>
+  </nav>
+
+  <header>
+    <h1>Cornwall 2025</h1>
+    <p>June 2025 &mdash; 71 photos</p>
+  </header>
+
+  <main class="grid" id="gallery"></main>
+
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lb-close" id="lbClose" aria-label="Close">&#x2715;</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous">&#x2039;</button>
+  <div class="lightbox-img-wrap"><img id="lbImg" src="" alt=""></div>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next">&#x203A;</button>
+  <div class="lb-counter" id="lbCounter"></div>
+</div>
+
+<script>
+  const BASE = 'https://d1mdd4q3n2hv7r.cloudfront.net/holidays/cornwall-2025/';
+
+  const photos = [
+    'PXL_20250608_161350797.jpg',
+    'PXL_20250608_165911887.jpg',
+    'PXL_20250609_095654770.jpg',
+    'PXL_20250609_095711588.jpg',
+    'PXL_20250609_095725772.jpg',
+    'PXL_20250609_095941253.jpg',
+    'PXL_20250609_100157858.jpg',
+    'PXL_20250609_100354574.jpg',
+    'PXL_20250610_095413522.jpg',
+    'PXL_20250610_100214498.jpg',
+    'PXL_20250610_100431986.jpg',
+    'PXL_20250610_101047229.jpg',
+    'PXL_20250610_101545390.jpg',
+    'PXL_20250610_101614547.jpg',
+    'PXL_20250610_101737244.jpg',
+    'PXL_20250610_101755456.jpg',
+    'PXL_20250610_101841566.jpg',
+    'PXL_20250610_102141035.jpg',
+    'PXL_20250610_102404939.jpg',
+    'PXL_20250610_115858532.jpg',
+    'PXL_20250610_120117010.jpg',
+    'PXL_20250610_121853359.jpg',
+    'PXL_20250610_190748243.jpg',
+    'PXL_20250611_095843503.jpg',
+    'PXL_20250611_095852307.jpg',
+    'PXL_20250611_103841635.jpg',
+    'PXL_20250611_103848532.jpg',
+    'PXL_20250611_103940301.jpg',
+    'PXL_20250611_103955611.jpg',
+    'PXL_20250611_105141704.jpg',
+    'PXL_20250611_105708661.jpg',
+    'PXL_20250611_105713451.jpg',
+    'PXL_20250611_111235522.jpg',
+    'PXL_20250611_111507116.jpg',
+    'PXL_20250611_112439304.jpg',
+    'PXL_20250611_122015415.jpg',
+    'PXL_20250611_122313331.jpg',
+    'PXL_20250612_101440576.jpg',
+    'PXL_20250612_101529611.jpg',
+    'PXL_20250612_101552623.jpg',
+    'PXL_20250612_101735725.jpg',
+    'PXL_20250612_151536294.jpg',
+    'PXL_20250612_160645207.jpg',
+    'PXL_20250612_160652530.jpg',
+    'PXL_20250613_093342261.jpg',
+    'PXL_20250613_093435577.jpg',
+    'PXL_20250613_114814819.jpg',
+    'PXL_20250613_141703608.jpg',
+    'PXL_20250613_141711622.jpg',
+    'PXL_20250613_142151320.jpg',
+    'PXL_20250613_144756392.jpg',
+    'PXL_20250613_144800966.jpg',
+    'PXL_20250613_144802573.jpg',
+    'PXL_20250613_145923493.jpg',
+    'PXL_20250613_170959761.jpg',
+    'PXL_20250613_171011097.jpg',
+    'PXL_20250614_101130614.jpg',
+    'PXL_20250614_113402443.jpg',
+    'PXL_20250614_113438719.jpg',
+    'PXL_20250614_130108426.jpg',
+    'PXL_20250615_065937582.jpg',
+    'PXL_20250615_091748845.jpg',
+    'PXL_20250615_095642956.jpg',
+    'PXL_20250615_105032869.jpg',
+    'PXL_20250615_120556438.jpg',
+    'PXL_20250615_120816236.jpg',
+    'PXL_20250615_122725826.jpg',
+    'PXL_20250616_122305787.jpg',
+    'PXL_20250616_122607278.jpg',
+    'PXL_20250616_122618255.jpg',
+    'PXL_20250616_122727859.jpg',
+  ];
+
+  const gallery = document.getElementById('gallery');
+  photos.forEach((filename, i) => {
+    const url = BASE + encodeURIComponent(filename);
+    const div = document.createElement('div');
+    div.className = 'thumb';
+    const img = document.createElement('img');
+    img.alt = `Cornwall 2025 photo ${i + 1}`;
+    img.loading = 'lazy';
+    img.src = url;
+    img.addEventListener('load',  () => img.classList.add('loaded'));
+    img.addEventListener('error', () => img.classList.add('loaded'));
+    div.appendChild(img);
+    div.addEventListener('click', () => openLightbox(i));
+    gallery.appendChild(div);
+  });
+
+  const lightbox  = document.getElementById('lightbox');
+  const lbImg     = document.getElementById('lbImg');
+  const lbCounter = document.getElementById('lbCounter');
+  let current = 0;
+
+  function openLightbox(i) { current = i; showPhoto(); lightbox.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeLightbox()  { lightbox.classList.remove('open'); document.body.style.overflow = ''; lbImg.src = ''; }
+  function showPhoto()      { lbImg.src = BASE + encodeURIComponent(photos[current]); lbImg.alt = `Cornwall 2025 photo ${current + 1}`; lbCounter.textContent = `${current + 1} / ${photos.length}`; }
+  function prev() { current = (current - 1 + photos.length) % photos.length; showPhoto(); }
+  function next() { current = (current + 1) % photos.length; showPhoto(); }
+
+  document.getElementById('lbClose').addEventListener('click', closeLightbox);
+  document.getElementById('lbPrev').addEventListener('click', prev);
+  document.getElementById('lbNext').addEventListener('click', next);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'ArrowLeft')  prev();
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'Escape')     closeLightbox();
+  });
+</script>
+</body>
+</html>
