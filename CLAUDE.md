@@ -13,6 +13,7 @@ nettleship-site/
 │   ├── photomap.html                   # Interactive photo map (Leaflet.js)
 │   ├── photos/
 │   │   ├── gallery.css                 # Shared styles for all gallery pages
+│   │   ├── gallery.js                  # Shared JS for all gallery pages — call initGallery(BASE, photos, label)
 │   │   ├── engagement.html             # Engagement photo gallery (90 photos)
 │   │   ├── wedding.html                # Wedding photo gallery (634 photos)
 │   │   ├── honeymoon.html              # Honeymoon photo gallery (38 photos)
@@ -51,7 +52,11 @@ All gallery pages (`engagement.html`, `wedding.html`, `holidays/*.html`) use `ga
 - From `webpages/photos/`: `<link rel="stylesheet" href="gallery.css">`
 - From `webpages/photos/holidays/`: `<link rel="stylesheet" href="../gallery.css">`
 
-Photos are served from CloudFront: `https://d1mdd4q3n2hv7r.cloudfront.net/<folder>/<filename>`. Holiday gallery filenames use `encodeURIComponent()` due to special characters; wedding/engagement use `.replace(/\+/g, '%2B')`.
+Photos are served from CloudFront: `https://d1mdd4q3n2hv7r.cloudfront.net/<folder>/<filename>`. All filenames use `encodeURIComponent()` (this handles `+` characters too, so no special case needed for wedding/engagement).
+
+All gallery pages load `gallery.js` for shared lightbox/grid logic. Each page's inline `<script>` just defines `BASE` and `photos`, then calls `initGallery(BASE, photos, 'Label')`. Load the script with a relative path:
+- From `webpages/photos/`: `<script src="gallery.js"></script>`
+- From `webpages/photos/holidays/`: `<script src="../gallery.js"></script>`
 
 When adding a new gallery page, follow the pattern in an existing holiday page. Complete all of these steps — do not skip any:
 
