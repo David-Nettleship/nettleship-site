@@ -28,7 +28,7 @@
     }
 
     .page {
-      max-width: 720px;
+      max-width: 900px;
       margin: 0 auto;
       background: var(--paper);
       border: 1px solid var(--rule);
@@ -123,17 +123,41 @@
     }
 
     .card:hover .card-arrow { color: var(--hover); }
+
+    .card-todo { cursor: default; opacity: 0.55; }
+    .card-todo:hover { border-color: var(--rule); box-shadow: none; }
+    .card-todo .card-title { color: var(--muted); }
   </style>
 </head>
 <body>
 <div class="page">
 
   <header>
-    <h1>Nettleship Family</h1>
-    <p>A collection of family history and heritage</p>
+    <h1>The Nettleship Family Chronicles</h1>
+    <br>
+    <p>The official website of the Nettleship family</p>
+    <br>
+    <p>Est 2026</p>
   </header>
 
   <main class="cards">
+
+    <a class="card" href="photos.html">
+      <div class="card-title">Photo Galleries</div>
+      <div class="card-meta">Life events, holidays</div>
+      <p class="card-preview">
+        Photo galleries for important family events.
+      </p>
+      <span class="card-arrow">View galleries →</span>
+    </a>
+
+    <div class="card card-todo">
+      <div class="card-title">Family Tree</div>
+      <div class="card-meta">Coming soon</div>
+      <p class="card-preview">
+        Interactive family tree tracing the Nettleship and related family lines.
+      </p>
+    </div>
 
     <a class="card" href="nettleship-mems.html">
       <div class="card-title">Nettleship Memories</div>
@@ -144,15 +168,6 @@
         raising a family, and the changes witnessed over a lifetime.
       </p>
       <span class="card-arrow">Read memories →</span>
-    </a>
-
-    <a class="card" href="photos.html">
-      <div class="card-title">Photo Galleries</div>
-      <div class="card-meta">Life events, holidays</div>
-      <p class="card-preview">
-        Photo galleries for important family events.
-      </p>
-      <span class="card-arrow">View galleries →</span>
     </a>
 
     <a class="card" href="myheritage/ethnicity.html">

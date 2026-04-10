@@ -165,6 +165,42 @@
     .card-todo { cursor: default; opacity: 0.55; }
     .card-todo:hover { border-color: var(--rule); box-shadow: none; }
     .card-preview-placeholder { background: var(--rule); }
+
+    /* ── Contents ── */
+    .contents {
+      font-family: var(--font-ui);
+      font-size: 0.82rem;
+      color: var(--muted);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 2.5rem;
+      background: var(--bg);
+    }
+
+    .contents-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .contents ol {
+      list-style: decimal;
+      padding-left: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .contents a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .contents a:hover { color: var(--hover); text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -179,9 +215,18 @@
     <p>Nettleship Pics</p>
   </header>
 
+  <nav class="contents" aria-label="Page contents">
+    <div class="contents-title">Contents</div>
+    <ol>
+      <li><a href="#david-kathryn">David &amp; Kathryn</a></li>
+      <li><a href="#holidays-recent">Family Holidays — 2024 and after</a></li>
+      <li><a href="#holidays-earlier">David &amp; Kathryn Holidays — 2023 &amp; earlier</a></li>
+    </ol>
+  </nav>
+
   <main>
 
-    <div class="section">
+    <div class="section" id="david-kathryn">
       <h2 class="section-heading">David &amp; Kathryn</h2>
       <div class="cards">
 
@@ -221,7 +266,7 @@
       </div>
     </div>
 
-    <div class="section">
+    <div class="section" id="holidays-recent">
       <h2 class="section-heading">Family Holidays — 2024 and after</h2>
       <div class="cards">
 
@@ -277,8 +322,8 @@
       </div>
     </div>
 
-    <div class="section">
-      <h2 class="section-heading">David & Kathryn Holidays — 2023 &amp; earlier</h2>
+    <div class="section" id="holidays-earlier">
+      <h2 class="section-heading">David &amp; Kathryn Holidays — 2023 &amp; earlier</h2>
       <div class="cards">
 
         <a class="card" href="photos/holidays/prague-2023.html">
