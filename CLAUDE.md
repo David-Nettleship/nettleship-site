@@ -10,6 +10,7 @@ nettleship-site/
 │   ├── index.html                      # Home page
 │   ├── nettleship-mems.html            # Pat's memoirs
 │   ├── photos.html                     # Gallery of galleries
+│   ├── photomap.html                   # Interactive photo map (Leaflet.js)
 │   ├── photos/
 │   │   ├── gallery.css                 # Shared styles for all gallery pages
 │   │   ├── engagement.html             # Engagement photo gallery (90 photos)
@@ -20,6 +21,7 @@ nettleship-site/
 │   │       ├── florence-2017.html      # Florence 2017 (16 photos)
 │   │       ├── copenhagen-2016.html    # Copenhagen 2016 (11 photos)
 │   │       ├── prague-2023.html        # Prague 2023 (48 photos)
+│   │       ├── northumberland-2023.html  # Northumberland 2023 (WIP)
 │   │       ├── wales-2023.html         # Wales 2023 (35 photos)
 │   │       ├── wales-2022.html         # Wales 2022 (31 photos)
 │   │       ├── cotswolds-2024.html     # Cotswolds 2024 (60 photos)
@@ -47,6 +49,7 @@ When adding a new gallery page, follow the pattern in an existing holiday page. 
 4. Upload: `aws s3 sync web/ s3://nettleship-photos/holidays/<folder>/ --content-type "image/jpeg"`
 5. Update `README.md`: add a row to the Pages table, the Photo folders table, the storage breakdown table, and revise the totals (photo count, GB, monthly cost)
 6. Update `CLAUDE.md`: add the file to the structure tree
+7. **For galleries from 2024 onwards**: extract GPS coordinates from the photos (use `mdls` for local files, or download from S3 and use Pillow if originals aren't available) and add the gallery as a new entry in the `galleries` array in `webpages/photomap.html`. Use `encodeURIComponent()` on the filename only (not the folder path). If photos have no GPS data, skip this step. Also convert the corresponding `placeholder` entry (if one exists) to a live gallery entry, or remove it.
 
 ## Design system
 

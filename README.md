@@ -16,8 +16,10 @@ A static family history website. No build step — open any `.html` file directl
 | `webpages/photos/holidays/florence-2017.html` | Photo gallery — Florence 2017 (16 photos) |
 | `webpages/photos/holidays/copenhagen-2016.html` | Photo gallery — Copenhagen 2016 (11 photos) |
 | `webpages/photos/holidays/prague-2023.html` | Photo gallery — Prague 2023 (48 photos) |
+| `webpages/photos/holidays/northumberland-2023.html` | Photo gallery — Northumberland 2023 (WIP) |
 | `webpages/photos/holidays/wales-2022.html` | Photo gallery — Wales 2022 (31 photos) |
 | `webpages/photos/holidays/wales-2023.html` | Photo gallery — Wales 2023 (35 photos) |
+| `webpages/photomap.html` | Photo map — geotagged holiday photos on an interactive map |
 | `webpages/photos/holidays/cotswolds-2024.html` | Photo gallery — Cotswolds 2024 (60 photos) |
 | `webpages/photos/holidays/new-forest-2025.html` | Photo gallery — New Forest 2025 (WIP) |
 | `webpages/photos/holidays/cornwall-2025.html` | Photo gallery — Cornwall 2025 (72 photos) |
@@ -131,7 +133,7 @@ All costs are in USD (AWS bills in USD).
 
 ### Current storage
 
-The site currently holds roughly 1,256 photos, all resized to 2000px / 85% JPEG quality — approximately 1 MB each on average.
+The site currently holds roughly 1,264 photos, all resized to 2000px / 85% JPEG quality — approximately 1 MB each on average.
 
 | Folder | Photos | Approx. size |
 |--------|--------|-------------|
@@ -142,12 +144,13 @@ The site currently holds roughly 1,256 photos, all resized to 2000px / 85% JPEG 
 | `holidays/prague-2023/` | 48 | ~48 MB |
 | `holidays/cotswolds-2024/` | 60 | ~60 MB |
 | `holidays/cornwall-2025/` | 71 | ~71 MB |
+| `holidays/northumberland-2023/` | 8 (WIP) | ~8 MB |
 | `holidays/wales-2022/` | 31 | ~31 MB |
 | `holidays/wales-2023/` | 35 | ~35 MB |
 | `holidays/new-forest-2025/` | 25+ | ~25 MB |
 | `holidays/florence-2017/` | 16 | ~13 MB |
 | `holidays/copenhagen-2016/` | 11 | ~8 MB |
-| **Total** | **~1,256** | **~1.25 GB** |
+| **Total** | **~1,264** | **~1.26 GB** |
 
 ### S3 storage cost
 

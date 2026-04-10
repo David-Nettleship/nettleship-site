@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo Map — Nettleship</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #faf8f3;
+      --paper:     #fffef9;
+      --ink:       #2c2416;
+      --muted:     #7a6e5f;
+      --rule:      #d9d0c0;
+      --accent:    #8b3a2a;
+      --hover:     #6e2d1f;
+      --font-body: Georgia, 'Times New Roman', serif;
+      --font-ui:   system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-body);
+      padding: 2rem 1rem 4rem;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 3rem 3.5rem 4rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+    }
+
+    @media (max-width: 600px) {
+      .page { padding: 1.5rem 1.25rem 2.5rem; }
+      body  { padding: 0.5rem 0.25rem 3rem; }
+    }
+
+    .site-nav {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      margin-bottom: 1.25rem;
+    }
+    .site-nav a { color: var(--muted); text-decoration: none; }
+    .site-nav a:hover { color: var(--accent); }
+
+    header {
+      text-align: center;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid var(--rule);
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      letter-spacing: .08em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    header p {
+      font-style: italic;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* ── Legend ── */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.5rem;
+      margin-bottom: 1.25rem;
+      font-family: var(--font-ui);
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid rgba(0,0,0,.25);
+      flex-shrink: 0;
+    }
+
+    /* ── Map ── */
+    #map {
+      width: 100%;
+      height: 620px;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+    }
+
+    /* ── Leaflet popup overrides ── */
+    .leaflet-popup-content-wrapper {
+      border-radius: 4px;
+      padding: 0;
+      overflow: hidden;
+      font-family: var(--font-ui);
+    }
+
+    .leaflet-popup-content {
+      margin: 0;
+      width: 200px !important;
+    }
+
+    .popup-img {
+      width: 200px;
+      height: 133px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .popup-body {
+      padding: 0.6rem 0.75rem 0.75rem;
+    }
+
+    .popup-gallery {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .popup-link {
+      font-size: 0.8rem;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .popup-link:hover { color: var(--hover); text-decoration: underline; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <nav class="site-nav" aria-label="Site navigation">
+    <a href="photos.html">← Photo Galleries</a>
+  </nav>
+
+  <header>
+    <h1>Photo Map</h1>
+    <p>Where we've been — geotagged photos plotted on a map</p>
+  </header>
+
+  <div class="legend" id="legend"></div>
+  <div id="map"></div>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const CDN = 'https://d1mdd4q3n2hv7r.cloudfront.net/';
+
+  const galleries = [
+    {
+      id: 'cornwall-2025',
+      label: 'Cornwall 2025',
+      color: '#c0392b',
+      href: 'photos/holidays/cornwall-2025.html',
+      folder: 'holidays/cornwall-2025/',
+      photos: [
+        ['PXL_20250608_161350797.jpg', 51.380095, -2.35722],
+        ['PXL_20250608_165911887.jpg', 51.38012166666667, -2.357195],
+        ['PXL_20250609_095654770.jpg', 51.381445, -2.359246666666666],
+        ['PXL_20250609_095711588.jpg', 51.381445, -2.359246666666666],
+        ['PXL_20250609_095725772.jpg', 51.38143666666667, -2.359091666666667],
+        ['PXL_20250609_095941253.jpg', 51.38133833333333, -2.358578333333333],
+        ['PXL_20250609_100157858.jpg', 51.38142833333333, -2.35918],
+        ['PXL_20250609_100354574.jpg', 51.38145333333333, -2.35867],
+        ['PXL_20250610_095413522.jpg', 50.36023833333333, -4.743071666666666],
+        ['PXL_20250610_100214498.jpg', 50.36165, -4.743878333333333],
+        ['PXL_20250610_100431986.jpg', 50.361405, -4.743271666666667],
+        ['PXL_20250610_101047229.jpg', 50.36093333333334, -4.74242],
+        ['PXL_20250610_101545390.jpg', 50.36106333333333, -4.74245],
+        ['PXL_20250610_101614547.jpg', 50.36106333333333, -4.74245],
+        ['PXL_20250610_101737244.jpg', 50.36104166666667, -4.742916666666667],
+        ['PXL_20250610_101755456.jpg', 50.36104166666667, -4.742916666666667],
+        ['PXL_20250610_101841566.jpg', 50.36092166666667, -4.74267],
+        ['PXL_20250610_102141035.jpg', 50.36132166666667, -4.743405],
+        ['PXL_20250610_102404939.jpg', 50.36174166666667, -4.743928333333333],
+        ['PXL_20250610_115858532.jpg', 50.36236666666667, -4.744853333333333],
+        ['PXL_20250610_120117010.jpg', 50.362455, -4.744866666666667],
+        ['PXL_20250610_121853359.jpg', 50.36250833333333, -4.745711666666667],
+        ['PXL_20250610_190748243.jpg', 50.466625, -5.031577833333333],
+        ['PXL_20250611_095843503.jpg', 50.464605, -5.017616666666667],
+        ['PXL_20250611_095852307.jpg', 50.46497, -5.020777833333334],
+        ['PXL_20250611_103841635.jpg', 50.46821166666667, -5.0320195],
+        ['PXL_20250611_103848532.jpg', 50.467575, -5.038461166666667],
+        ['PXL_20250611_103940301.jpg', 50.46759166666666, -5.038461166666667],
+        ['PXL_20250611_103955611.jpg', 50.46759166666666, -5.038461166666667],
+        ['PXL_20250611_105141704.jpg', 50.46753666666667, -5.036866666666667],
+        ['PXL_20250611_105708661.jpg', 50.4674, -5.036072166666667],
+        ['PXL_20250611_105713451.jpg', 50.46659666666667, -5.033066666666667],
+        ['PXL_20250611_111235522.jpg', 50.46541333333333, -5.032047166666667],
+        ['PXL_20250611_111507116.jpg', 50.46578333333333, -5.0315],
+        ['PXL_20250611_112439304.jpg', 50.46505333333333, -5.032072166666667],
+        ['PXL_20250611_122015415.jpg', 50.46571166666666, -5.031588833333333],
+        ['PXL_20250611_122313331.jpg', 50.46602833333333, -5.0317695],
+        ['PXL_20250612_101440576.jpg', 50.31144666666667, -5.1323945],
+        ['PXL_20250612_101529611.jpg', 50.31170833333334, -5.1323555],
+        ['PXL_20250612_101552623.jpg', 50.31170833333334, -5.1323555],
+        ['PXL_20250612_101735725.jpg', 50.31170833333334, -5.1323555],
+        ['PXL_20250612_151536294.jpg', 50.40415333333333, -5.0621055],
+        ['PXL_20250612_160645207.jpg', 50.404095, -5.0621055],
+        ['PXL_20250612_160652530.jpg', 50.404095, -5.0621055],
+        ['PXL_20250613_093342261.jpg', 50.44097833333333, -4.696495000000001],
+        ['PXL_20250613_093435577.jpg', 50.44097833333333, -4.696495000000001],
+        ['PXL_20250613_114814819.jpg', 50.44066666666667, -4.697566666666667],
+        ['PXL_20250613_141703608.jpg', 50.414825, -5.083836166666667],
+        ['PXL_20250613_141711622.jpg', 50.414825, -5.083836166666667],
+        ['PXL_20250613_142151320.jpg', 50.41475333333333, -5.083747166666667],
+        ['PXL_20250613_144756392.jpg', 50.41478333333333, -5.083763833333333],
+        ['PXL_20250613_144800966.jpg', 50.41481333333333, -5.083816666666666],
+        ['PXL_20250613_144802573.jpg', 50.41481333333333, -5.083816666666666],
+        ['PXL_20250613_145923493.jpg', 50.41482, -5.0838445],
+        ['PXL_20250613_170959761.jpg', 50.46454666666666, -5.031997166666667],
+        ['PXL_20250613_171011097.jpg', 50.46455, -5.032036166666667],
+        ['PXL_20250614_101130614.jpg', 50.46503, -5.032225],
+        ['PXL_20250614_113402443.jpg', 50.46510333333333, -5.0321555],
+        ['PXL_20250614_113438719.jpg', 50.46525333333334, -5.0320945],
+        ['PXL_20250614_130108426.jpg', 50.46210333333333, -5.0129],
+        ['PXL_20250615_065937582.jpg', 50.46208833333333, -5.012883333333333],
+        ['PXL_20250615_091748845.jpg', 50.37835333333334, -5.0351445],
+        ['PXL_20250615_095642956.jpg', 50.36250833333333, -5.040522166666666],
+        ['PXL_20250615_105032869.jpg', 50.362475, -5.040488833333334],
+        ['PXL_20250615_120556438.jpg', 50.36215, -5.040975],
+        ['PXL_20250615_120816236.jpg', 50.36213833333333, -5.041086166666667],
+        ['PXL_20250615_122725826.jpg', 50.36159666666666, -5.040697166666667],
+        ['PXL_20250616_122305787.jpg', 50.96048833333333, -2.861711666666666],
+        ['PXL_20250616_122607278.jpg', 50.96095833333333, -2.859258333333333],
+        ['PXL_20250616_122618255.jpg', 50.96073833333333, -2.860146666666667],
+        ['PXL_20250616_122727859.jpg', 50.96079666666667, -2.859855],
+      ],
+    },
+    {
+      id: 'lake-district-2026',
+      label: 'Lake District 2026',
+      color: '#27ae60',
+      placeholder: true,
+      center: [54.45, -3.08],
+    },
+    {
+      id: 'norfolk-2026',
+      label: 'Norfolk 2026',
+      color: '#2980b9',
+      placeholder: true,
+      center: [52.73, 1.25],
+    },
+    {
+      id: 'cotswolds-2024',
+      label: 'Cotswolds 2024',
+      color: '#8e44ad',
+      href: 'photos/holidays/cotswolds-2024.html',
+      folder: 'holidays/cotswolds-2024/',
+      photos: [
+        ['PXL_20240608_130004979.jpg', 52.354219444444446, -1.7731249999999998],
+        ['PXL_20240608_130903596.jpg', 52.348930555555555, -1.7455444444444446],
+        ['PXL_20240608_134843409.jpg', 52.34805555555556, -1.7456805555555557],
+        ['PXL_20240608_134853208.jpg', 52.34805555555556, -1.7456805555555557],
+        ['PXL_20240608_135137323.jpg', 52.34788888888889, -1.7463916666666668],
+        ['PXL_20240608_135607450.jpg', 52.347325000000005, -1.7466722222222222],
+        ['PXL_20240608_140706474.jpg', 52.34691388888889, -1.7460777777777778],
+        ['PXL_20240608_141724336.jpg', 52.349783333333335, -1.746113888888889],
+        ['PXL_20240608_141728660.jpg', 52.349783333333335, -1.746113888888889],
+        ['PXL_20240609_080059346.jpg', 52.011008333333336, -1.9522166666666667],
+        ['PXL_20240609_104227229.jpg', 52.03615555555555, -1.8624305555555556],
+        ['PXL_20240609_110427235.jpg', 52.036363888888886, -1.8604277777777778],
+        ['PXL_20240609_111504871.jpg', 52.03630555555555, -1.8603972222222223],
+        ['PXL_20240609_130616477.jpg', 52.03576111111111, -1.8622944444444445],
+        ['PXL_20240609_141336965.jpg', 52.04076944444444, -1.8735916666666668],
+        ['PXL_20240609_141417635.jpg', 52.04087777777777, -1.8732722222222222],
+        ['PXL_20240609_180528795.jpg', 52.010238888888885, -1.95205],
+        ['PXL_20240610_101946612.jpg', 52.10561944444444, -2.1659916666666668],
+        ['PXL_20240610_105927612.jpg', 52.104819444444445, -2.1660388888888886],
+        ['PXL_20240610_125131783.jpg', 52.17633333333333, -2.1771055555555554],
+        ['PXL_20240611_095627064.jpg', 52.04201111111111, -1.8726833333333333],
+        ['PXL_20240611_112118140.jpg', 51.88493888888889, -1.7586527777777778],
+        ['PXL_20240611_142834172.jpg', 52.04091388888889, -1.8732944444444444],
+        ['PXL_20240611_142835555.jpg', 52.04091388888889, -1.8732944444444444],
+        ['PXL_20240611_142837697.jpg', 52.04091388888889, -1.8732944444444444],
+        ['PXL_20240611_142846482.jpg', 52.04091388888889, -1.8732944444444444],
+        ['PXL_20240612_104047797.jpg', 51.94878333333333, -1.9573277777777778],
+        ['PXL_20240612_104315557.jpg', 51.947936111111105, -1.9574722222222223],
+        ['PXL_20240612_111314393.jpg', 51.947222222222216, -1.9564388888888888],
+        ['PXL_20240612_111346626.jpg', 51.94730555555555, -1.9561972222222221],
+        ['PXL_20240612_111837925.jpg', 51.947269444444444, -1.9564666666666666],
+        ['PXL_20240612_111850023.jpg', 51.94731944444444, -1.9561833333333334],
+        ['PXL_20240612_125948239.jpg', 51.94769722222222, -1.9544722222222222],
+        ['PXL_20240614_120411656.jpg', 52.00401388888889, -1.8623333333333334],
+        ['PXL_20240614_120609381.jpg', 52.00261666666667, -1.8605277777777778],
+        ['PXL_20240614_121450027.jpg', 52.00286111111111, -1.860513888888889],
+        ['PXL_20240614_121451565.jpg', 52.00286111111111, -1.860513888888889],
+        ['PXL_20240614_121834133.jpg', 52.00286111111111, -1.860513888888889],
+        ['PXL_20240614_122018839.jpg', 52.00277777777778, -1.860263888888889],
+        ['PXL_20240614_123503199.jpg', 52.00277222222222, -1.8602611111111111],
+        ['PXL_20240614_125235853.jpg', 52.002975, -1.861038888888889],
+        ['PXL_20240614_151413453.jpg', 51.90144166666666, -2.084177777777778],
+        ['PXL_20240614_151416431.jpg', 51.90144166666666, -2.084177777777778],
+        ['PXL_20240614_151418749.jpg', 51.90144166666666, -2.084177777777778],
+        ['PXL_20240614_184102597.jpg', 52.011005555555556, -1.9522111111111111],
+        ['PXL_20240614_184105098.jpg', 52.011005555555556, -1.9522111111111111],
+        ['PXL_20240614_184133909.jpg', 52.011005555555556, -1.9522111111111111],
+        ['original_718e122f-bb2f-43a4-affd-c8f29073bafd_PXL_20240608_130015445.jpg', 52.34973055555556, -1.7460777777777778],
+        ['original_bed6f78e-bf29-416d-8732-907da504f570_PXL_20240609_180402362.jpg', 52.010225, -1.9520388888888889],
+      ],
+    },
+    {
+      id: 'new-forest-2025',
+      label: 'New Forest 2025',
+      color: '#d35400',
+      href: 'photos/holidays/new-forest-2025.html',
+      folder: 'holidays/new-forest-2025/',
+      photos: [
+        ['PXL_20250702_140517012.jpg', 52.02646111111111, -1.0139416666666667],
+        ['PXL_20250703_120242163.jpg', 50.85080833333333, -1.8510055555555556],
+        ['PXL_20250703_120842424.jpg', 50.85318888888889, -1.8528666666666667],
+        ['PXL_20250703_134833532.jpg', 50.84988055555556, -1.8367555555555557],
+        ['PXL_20250703_135055058.jpg', 50.84983888888889, -1.8367361111111113],
+        ['PXL_20250703_162313477.jpg', 50.90629166666667, -1.7721083333333332],
+        ['PXL_20250704_084845675.jpg', 50.93071111111111, -1.761411111111111],
+        ['PXL_20250704_085143034.jpg', 50.93071111111111, -1.761411111111111],
+        ['PXL_20250704_085153005.jpg', 50.93064444444444, -1.7617305555555556],
+        ['PXL_20250704_085157005.jpg', 50.93064444444444, -1.7617305555555556],
+        ['PXL_20250704_123205918.jpg', 50.79810277777778, -1.4213472222222223],
+        ['PXL_20250705_115605483.jpg', 50.69423055555555, -2.2434444444444446],
+        ['PXL_20250705_120049092.jpg', 50.69419444444444, -2.2434527777777777],
+        ['PXL_20250705_165918631.jpg', 50.93138611111111, -1.760025],
+        ['PXL_20250706_104903704.jpg', 50.82246666666667, -1.4522555555555554],
+        ['PXL_20250706_105624467.jpg', 50.822361111111114, -1.452075],
+        ['PXL_20250706_115800644.jpg', 50.82313611111111, -1.4536555555555555],
+        ['PXL_20250706_122203590.jpg', 50.823025, -1.4538944444444444],
+        ['PXL_20250706_122246004.jpg', 50.823025, -1.4538944444444444],
+        ['PXL_20250706_124819318.jpg', 50.81955555555556, -1.4525027777777777],
+        ['PXL_20250706_134126755.jpg', 50.82364166666667, -1.4540388888888889],
+        ['PXL_20250706_163451966.jpg', 50.93176388888889, -1.7604916666666666],
+        ['PXL_20250708_124815295.jpg', 50.81051111111111, -2.031438888888889],
+        ['PXL_20250708_131820868.jpg', 50.81046388888888, -2.0316111111111113],
+        ['PXL_20250708_131835672.jpg', 50.81043888888889, -2.0316555555555555],
+      ],
+    },
+  ];
+
+  // Build map
+  const map = L.map('map').setView([52.5, -3.8], 6);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19,
+    subdomains: 'abcd',
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
+  }).addTo(map);
+
+  // Build legend
+  const legendEl = document.getElementById('legend');
+
+  galleries.forEach(gallery => {
+    if (gallery.placeholder) {
+      // Legend entry — dimmed
+      const item = document.createElement('div');
+      item.className = 'legend-item';
+      item.style.opacity = '0.45';
+      item.innerHTML = `<span class="legend-dot" style="background:none;border-color:${gallery.color}"></span>${gallery.label} — coming soon`;
+      legendEl.appendChild(item);
+
+      // Single hollow marker at approximate centre
+      L.circleMarker(gallery.center, {
+        radius: 8,
+        fillColor: 'none',
+        color: gallery.color,
+        weight: 2,
+        opacity: 0.5,
+        fillOpacity: 0,
+        dashArray: '4 3',
+      }).addTo(map).bindPopup(`
+        <div class="popup-body" style="padding:0.75rem">
+          <div class="popup-gallery">${gallery.label}</div>
+          <span style="font-size:0.8rem;color:var(--muted)">Coming soon — no photos yet</span>
+        </div>
+      `, { maxWidth: 200 });
+    } else {
+      // Legend entry
+      const item = document.createElement('div');
+      item.className = 'legend-item';
+      item.innerHTML = `<span class="legend-dot" style="background:${gallery.color}"></span>${gallery.label} (${gallery.photos.length} photos)`;
+      legendEl.appendChild(item);
+
+      // Photo markers
+      gallery.photos.forEach(([filename, lat, lng]) => {
+        const marker = L.circleMarker([lat, lng], {
+          radius: 7,
+          fillColor: gallery.color,
+          color: '#fff',
+          weight: 1.5,
+          opacity: 1,
+          fillOpacity: 0.85,
+        }).addTo(map);
+
+        const imgUrl = CDN + gallery.folder + encodeURIComponent(filename);
+        marker.bindPopup(`
+          <img class="popup-img" src="${imgUrl}" alt="${gallery.label}" loading="lazy">
+          <div class="popup-body">
+            <div class="popup-gallery">${gallery.label}</div>
+            <a class="popup-link" href="${gallery.href}">View gallery →</a>
+          </div>
+        `, { maxWidth: 200 });
+      });
+    }
+  });
+
+  // Fit map to photo markers only (exclude placeholder centres from bounds)
+  const allCoords = galleries.filter(g => !g.placeholder).flatMap(g => g.photos.map(([,lat,lng]) => [lat, lng]));
+  map.fitBounds(allCoords, { padding: [40, 40] });
+</script>
+</body>
+</html>
