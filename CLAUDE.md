@@ -104,8 +104,9 @@ The site distribution is protected by HTTP Basic Auth via Lambda@Edge (username:
 
 To deploy site changes:
 ```bash
-aws s3 sync webpages/ s3://nettleship-site/ --delete
+./deploy.sh
 ```
+This checks Terraform is up to date, syncs `webpages/` to S3, and invalidates the CloudFront cache (required every deploy — without it the CDN serves stale content). If Terraform has unapplied changes it will warn and prompt before continuing.
 
 To rotate the password:
 ```bash

@@ -137,11 +137,18 @@ terraform apply
 
 ### Deploying site files
 
-After applying infra, sync the HTML/CSS/JS to the site bucket:
+Run the deploy script — it checks Terraform, syncs HTML/CSS/JS to S3, and invalidates the CloudFront cache:
 
 ```bash
-aws s3 sync webpages/ s3://nettleship-site/ --delete
+./deploy.sh
 ```
+
+Steps performed:
+1. `terraform plan` — warns if infra has unapplied changes (prompts to continue or abort)
+2. `aws s3 sync` — uploads changed files, deletes removed ones
+3. CloudFront invalidation — clears the CDN cache (required every deploy; without it the CDN serves stale content)
+
+Changes are live within ~60 seconds of the invalidation completing.
 
 ### Rotating the site password
 
