@@ -21,21 +21,17 @@ resource "aws_iam_role_policy_attachment" "lambda_auth_basic_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-data "aws_secretsmanager_secret" "site_auth" {
-  name = "nettleship/site/auth-password"
+data "aws_ssm_parameter" "site_auth" {
+  name = "/nettleship/site/auth-password"
 }
 
-data "aws_secretsmanager_secret_version" "site_auth" {
-  secret_id = data.aws_secretsmanager_secret.site_auth.id
-}
-
-# Render the template and zip it — password is pulled from Secrets Manager at plan time
+# Render the template and zip it — password is pulled from SSM at plan time
 data "archive_file" "auth_lambda" {
   type        = "zip"
   output_path = "${path.module}/lambda/auth.zip"
 
   source {
-    content  = templatefile("${path.module}/lambda/auth.js.tpl", { password = data.aws_secretsmanager_secret_version.site_auth.secret_string })
+    content  = templatefile("${path.module}/lambda/auth.js.tpl", { password = data.aws_ssm_parameter.site_auth.value })
     filename = "index.js"
   }
 }

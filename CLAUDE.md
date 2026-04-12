@@ -105,7 +105,7 @@ The site is hosted on AWS. Two separate CloudFront distributions:
 | `d1mdd4q3n2hv7r.cloudfront.net` | `nettleship-photos` | Photo CDN |
 | see `site_url` Terraform output | `nettleship-site` | Site HTML/CSS/JS |
 
-The site distribution is protected by HTTP Basic Auth via Lambda@Edge (username: `nettleship`). The password is stored in AWS Secrets Manager at `nettleship/site/auth-password` (eu-west-2) and baked into the Lambda at `terraform apply` time. Lambda@Edge must be deployed in `us-east-1` — the `providers.tf` alias handles this.
+The site distribution is protected by HTTP Basic Auth via Lambda@Edge (username: `nettleship`). The password is stored in SSM Parameter Store at `/nettleship/site/auth-password` (eu-west-2) and baked into the Lambda at `terraform apply` time. Lambda@Edge must be deployed in `us-east-1` — the `providers.tf` alias handles this.
 
 To deploy site changes:
 ```bash
@@ -115,9 +115,11 @@ This checks Terraform is up to date, syncs `webpages/` to S3, and invalidates th
 
 To rotate the password:
 ```bash
-aws secretsmanager put-secret-value \
-  --secret-id "nettleship/site/auth-password" \
-  --secret-string "newpassword" \
+aws ssm put-parameter \
+  --name "/nettleship/site/auth-password" \
+  --value "newpassword" \
+  --type String \
+  --overwrite \
   --region eu-west-2
 cd infra && terraform apply
 ```

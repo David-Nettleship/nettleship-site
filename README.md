@@ -41,25 +41,40 @@ nettleship-site/
 │   ├── index.html
 │   ├── nettleship-mems.html
 │   ├── photos.html
+│   ├── photomap.html
 │   ├── photos/
 │   │   ├── gallery.css              # Shared styles for all gallery pages
+│   │   ├── gallery.js               # Shared JS — call initGallery(BASE, photos, label)
 │   │   ├── engagement.html
 │   │   ├── wedding.html
 │   │   ├── honeymoon.html
+│   │   ├── alex-year-one.html
+│   │   ├── alex-is-two.html
 │   │   └── holidays/
 │   │       ├── greece-2019.html
+│   │       ├── florence-2017.html
+│   │       ├── copenhagen-2016.html
+│   │       ├── wales-2022.html
+│   │       ├── wales-2023.html
+│   │       ├── northumberland-2023.html
 │   │       ├── prague-2023.html
 │   │       ├── cotswolds-2024.html
+│   │       ├── cornwall-2025.html
 │   │       └── new-forest-2025.html
 │   └── myheritage/
 │       ├── ethnicity.html
 │       └── ethnicity.json
 └── infra/
-    ├── main.tf
     ├── backend.tf
+    ├── providers.tf
     ├── s3.tf
     ├── cloudfront.tf
-    └── outputs.tf
+    ├── site_s3.tf
+    ├── site_cloudfront.tf
+    ├── site_lambda.tf
+    ├── outputs.tf
+    └── lambda/
+        └── auth.js.tpl
 ```
 
 ## Infrastructure
@@ -76,7 +91,7 @@ Photo hosting is managed via Terraform in the `infra/` directory, using AWS S3 +
 | CloudFront domain | `d1mdd4q3n2hv7r.cloudfront.net` | Base URL for all photo references |
 | CloudFront distribution | (see outputs) | CDN — serves site HTML/CSS/JS over HTTPS |
 | Lambda@Edge | `nettleship-site-auth` | HTTP Basic Auth — deployed in `us-east-1` |
-| Secrets Manager secret | `nettleship/site/auth-password` | Site login password — `eu-west-2` |
+| SSM Parameter | `/nettleship/site/auth-password` | Site login password — `eu-west-2` |
 
 Both buckets are private with all public access blocked. CloudFront accesses them via Origin Access Control (OAC). The site distribution requires HTTP Basic Auth, handled by a Lambda@Edge viewer-request function.
 
@@ -153,9 +168,11 @@ Changes are live within ~60 seconds of the invalidation completing.
 ### Rotating the site password
 
 ```bash
-aws secretsmanager put-secret-value \
-  --secret-id "nettleship/site/auth-password" \
-  --secret-string "newpassword" \
+aws ssm put-parameter \
+  --name "/nettleship/site/auth-password" \
+  --value "newpassword" \
+  --type String \
+  --overwrite \
   --region eu-west-2
 
 cd infra && terraform apply  # redeploys Lambda with new password
@@ -206,13 +223,9 @@ CloudFront has a **permanent free tier** of 1 TB data transfer and 10 million HT
 
 S3 charges $0.00043 per 1,000 GET requests. Even if every photo is loaded by 10 people, that's ~10,000 requests — less than **$0.01**.
 
-### Secrets Manager
+### SSM Parameter Store
 
-AWS Secrets Manager charges **$0.40 per secret per month**.
-
-| Secrets | Monthly cost |
-|---------|-------------|
-| 1 (`nettleship/site/auth-password`) | $0.40 |
+SSM Parameter Store standard parameters are **free**.
 
 ### Lambda@Edge
 
@@ -226,7 +239,7 @@ Lambda@Edge charges $0.60 per million requests + compute time. At family-scale t
 | CloudFront delivery (both distributions) | $0.00 (free tier) |
 | S3 GET requests | < $0.01 |
 | Lambda@Edge auth | ~$0.00 |
-| Secrets Manager (1 secret) | $0.40 |
-| **Total** | **~$0.43–$0.50** |
+| SSM Parameter Store | $0.00 |
+| **Total** | **~$0.04–$0.05** |
 
-The dominant cost is now the Secrets Manager secret at a flat $0.40/month. S3 storage grows slowly as more galleries are added (~$0.01/month per 500 photos).
+S3 storage is now the only meaningful cost, growing slowly as more galleries are added (~$0.01/month per 500 photos).
