@@ -11,8 +11,9 @@ nettleship-site/
 │   ├── nettleship-mems.html            # Pat's memoirs
 │   ├── photos.html                     # Gallery of galleries
 │   ├── photomap.html                   # Interactive photo map (Leaflet.js)
+│   ├── site.css                        # Shared base styles for all pages (reset, variables, nav, header)
 │   ├── photos/
-│   │   ├── gallery.css                 # Shared styles for all gallery pages
+│   │   ├── gallery.css                 # Gallery-specific styles (grid, lightbox, header override)
 │   │   ├── gallery.js                  # Shared JS for all gallery pages — call initGallery(BASE, photos, label)
 │   │   ├── engagement.html             # Engagement photo gallery (90 photos)
 │   │   ├── wedding.html                # Wedding photo gallery (634 photos)
@@ -48,7 +49,13 @@ nettleship-site/
 
 ## Gallery pages
 
-All gallery pages (`engagement.html`, `wedding.html`, `holidays/*.html`) use `gallery.css` for shared styles. Link it with a relative path:
+All pages link `site.css` for shared base styles (reset, variables, nav, header). Link it with a relative path:
+- From `webpages/`: `<link rel="stylesheet" href="site.css">`
+- From `webpages/photos/`: `<link rel="stylesheet" href="../site.css">`
+- From `webpages/photos/holidays/`: `<link rel="stylesheet" href="../../site.css">`
+- From `webpages/myheritage/`: `<link rel="stylesheet" href="../site.css">`
+
+All gallery pages also link `gallery.css` for grid/lightbox styles. Link it after `site.css`:
 - From `webpages/photos/`: `<link rel="stylesheet" href="gallery.css">`
 - From `webpages/photos/holidays/`: `<link rel="stylesheet" href="../gallery.css">`
 

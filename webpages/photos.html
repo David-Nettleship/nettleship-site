@@ -4,202 +4,60 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Photo Galleries — Nettleship</title>
+  <link rel="stylesheet" href="site.css">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    .page { max-width: 1100px; }
 
-    :root {
-      --bg:        #faf8f3;
-      --paper:     #fffef9;
-      --ink:       #2c2416;
-      --muted:     #7a6e5f;
-      --rule:      #d9d0c0;
-      --accent:    #8b3a2a;
-      --hover:     #6e2d1f;
-      --font-body: Georgia, 'Times New Roman', serif;
-      --font-ui:   system-ui, -apple-system, sans-serif;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: var(--font-body);
-      padding: 2rem 1rem 4rem;
-    }
-
-    .page {
-      max-width: 1100px;
-      margin: 0 auto;
-      background: var(--paper);
-      border: 1px solid var(--rule);
-      border-radius: 4px;
-      padding: 3rem 3.5rem 4rem;
-      box-shadow: 0 2px 12px rgba(0,0,0,.07);
-    }
-
-    @media (max-width: 600px) {
-      .page { padding: 1.5rem 1.25rem 2.5rem; }
-      body  { padding: 0.5rem 0.25rem 3rem; }
-    }
-
-    /* ── Site nav ── */
-    .site-nav {
-      font-family: var(--font-ui);
-      font-size: 0.8rem;
-      margin-bottom: 1.25rem;
-    }
-    .site-nav a { color: var(--muted); text-decoration: none; }
-    .site-nav a:hover { color: var(--accent); }
-
-    /* ── Header ── */
-    header {
-      text-align: center;
-      padding-bottom: 2rem;
-      border-bottom: 2px solid var(--rule);
-      margin-bottom: 2.5rem;
-    }
-
-    header h1 {
-      font-size: 2rem;
-      letter-spacing: .08em;
-      color: var(--accent);
-      text-transform: uppercase;
-      margin-bottom: 0.4rem;
-    }
-
-    header p {
-      font-style: italic;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    /* ── Sections ── */
-    .section {
-      margin-bottom: 2.5rem;
-    }
-
+    .section { margin-bottom: 2.5rem; }
     .section-heading {
-      font-size: 0.75rem;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      font-family: var(--font-ui);
-      font-weight: 600;
-      color: var(--muted);
-      border-bottom: 1px solid var(--rule);
-      padding-bottom: 0.4rem;
-      margin-bottom: 1.25rem;
+      font-size: 0.75rem; letter-spacing: .12em; text-transform: uppercase;
+      font-family: var(--font-ui); font-weight: 600; color: var(--muted);
+      border-bottom: 1px solid var(--rule); padding-bottom: 0.4rem; margin-bottom: 1.25rem;
     }
 
-    /* ── Cards ── */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-    }
-
-    @media (max-width: 800px) {
-      .cards { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    @media (max-width: 520px) {
-      .cards { grid-template-columns: 1fr; }
-    }
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    @media (max-width: 800px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px)  { .cards { grid-template-columns: 1fr; } }
 
     .card {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-      border: 1px solid var(--rule);
-      border-radius: 4px;
-      overflow: hidden;
-      background: var(--bg);
-      transition: border-color .15s, box-shadow .15s;
+      display: block; text-decoration: none; color: inherit;
+      border: 1px solid var(--rule); border-radius: 4px; overflow: hidden;
+      background: var(--bg); transition: border-color .15s, box-shadow .15s;
     }
+    .card:hover { border-color: var(--accent); box-shadow: 0 2px 10px rgba(139,58,42,.12); }
 
-    .card:hover {
-      border-color: var(--accent);
-      box-shadow: 0 2px 10px rgba(139,58,42,.12);
-    }
-
-    .card-preview-img {
-      width: 100%;
-      aspect-ratio: 16 / 7;
-      object-fit: cover;
-      display: block;
-      background: var(--rule);
-    }
-
-    .card-body {
-      padding: 1.25rem 1.5rem 1.4rem;
-    }
+    .card-preview-img { width: 100%; aspect-ratio: 16 / 7; object-fit: cover; display: block; background: var(--rule); }
+    .card-body { padding: 1.25rem 1.5rem 1.4rem; }
 
     .card-title {
-      font-size: 1.05rem;
-      font-family: var(--font-ui);
-      font-weight: 700;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 0.3rem;
+      font-size: 1.05rem; font-family: var(--font-ui); font-weight: 700;
+      letter-spacing: .04em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.3rem;
     }
-
     .card:hover .card-title { color: var(--hover); }
 
-    .card-meta {
-      font-size: 0.78rem;
-      font-family: var(--font-ui);
-      color: var(--muted);
-      margin-bottom: 0.6rem;
-    }
+    .card-meta { font-size: 0.78rem; font-family: var(--font-ui); color: var(--muted); margin-bottom: 0.6rem; }
 
     .card-arrow {
-      display: inline-block;
-      margin-top: 0.75rem;
-      font-size: 0.8rem;
-      font-family: var(--font-ui);
-      color: var(--accent);
-      letter-spacing: .05em;
+      display: inline-block; margin-top: 0.75rem; font-size: 0.8rem;
+      font-family: var(--font-ui); color: var(--accent); letter-spacing: .05em;
     }
-
     .card:hover .card-arrow { color: var(--hover); }
 
     .card-todo { cursor: default; opacity: 0.55; }
     .card-todo:hover { border-color: var(--rule); box-shadow: none; }
     .card-preview-placeholder { background: var(--rule); }
 
-    /* ── Contents ── */
     .contents {
-      font-family: var(--font-ui);
-      font-size: 0.82rem;
-      color: var(--muted);
-      border: 1px solid var(--rule);
-      border-radius: 4px;
-      padding: 1rem 1.25rem;
-      margin-bottom: 2.5rem;
-      background: var(--bg);
+      font-family: var(--font-ui); font-size: 0.82rem; color: var(--muted);
+      border: 1px solid var(--rule); border-radius: 4px;
+      padding: 1rem 1.25rem; margin-bottom: 2.5rem; background: var(--bg);
     }
-
     .contents-title {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.5rem;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem;
     }
-
-    .contents ol {
-      list-style: decimal;
-      padding-left: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .contents a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
+    .contents ol { list-style: decimal; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.25rem; }
+    .contents a { color: var(--accent); text-decoration: none; }
     .contents a:hover { color: var(--hover); text-decoration: underline; }
   </style>
 </head>
